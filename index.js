@@ -19,5 +19,5 @@ app.use("api/User", UserRouter);
 
   
 app.listen(PORT, () => {
-    console.log(`Server started at port ${PORT}`);
+    console.log(`Server started at http:\\\\localhost:${PORT}`);
 });
