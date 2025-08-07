@@ -1,13 +1,20 @@
-import { MongoClient } from "mongodb";
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
+
 const connectionString = process.env.MONGODB_URL || "";
-const client = new MongoClient(connectionString);
-let conn;
-try {
-  conn = await client.connect();
-} catch(e) {
-  console.error(e);
-}
-let db = conn.db("MoneyManagement");
+
+mongoose.connect(connectionString, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: 'MoneyManagement'
+});
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+    console.log('Connected to MongoDB via Mongoose');
+});
+
 export default db;
