@@ -1,11 +1,15 @@
-import express, { Request, Response } from 'express';
-import UserRepository from '../Repositories/User-repo';
-import { User } from '../Models/User';
-
+import express from 'express';
 const router = express.Router();
 
 // Example: Get all users
-// router.get('/', hello);
+router.get('/', async (req, res) => {
+    try {
+        // Replace with your database logic
+        res.status(200).send({ message: 'Get all users' });
+    } catch (error) {
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+});
 
 // Example: Get a user by ID
 router.get('/:id', async (req, res) => {
@@ -19,23 +23,23 @@ router.get('/:id', async (req, res) => {
 });
 
 // Example: Create a new user
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req, res) => {
     try {
-        const user: IUser = req.body;
+        const { username, password } = req.body;
 
         // Validate request body
-        if (!user.username || !user.password) {
-            return res.status(400).json({ error: 'Username and password are required' });
+        if (!username || !password) {
+            res.status(400).send({ error: 'Username and password are required' });
+            return; 
         }
 
-        // Pass the typed object to the repository
-        const newUser = await userRepo.createUser(user);
-        res.status(201).json({ message: 'User created', data: newUser });
+        // Replace with your database logic
+        const userData = { username, password }; // Example structure
+        res.status(201).send({ message: 'User created', data: userData });
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).send({ error: 'Internal Server Error' });
     }
 });
-
 
 // Example: Update a user by ID
 router.put('/:id', async (req, res) => {

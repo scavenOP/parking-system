@@ -1,12 +1,12 @@
 
-import express from 'express';
+import express, { json } from 'express';
 import UserRouter from './Routes/User-route.js';
 import db from './db/conn.js'
 const app = express();
 const router = express.Router();
 const PORT = process.env.PORT || 8000; 
 
-
+app.use(express.json());
 app.use("/", router);
 app.use("/api/User", UserRouter);
 // // Get a list of 50 posts
