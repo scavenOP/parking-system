@@ -15,6 +15,15 @@ yarn-error.log*
 dist/
 build/
 coverage/
+public/
+
+# Angular-specific files
+.angular/
+.angular/cache/
+*.ngsummary.json
+*.ngfactory.ts
+*.ngstyle.ts
+*.ngsummary.ts
 
 # Logs
 logs/
@@ -42,3 +51,7 @@ jest-test-results.json
 
 # Optional: Linux system files
 *~
+
+# Angular CLI temporary files
+.sass-cache/
+.tmp/
