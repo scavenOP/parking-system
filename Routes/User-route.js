@@ -1,6 +1,6 @@
 import express from 'express';
 import UserModel from '../Models/User-Model.js';
-import { getUserById, createUser } from '../Services/UserService.js';
+import { getUserById, createUser, loginUser } from '../Services/UserService.js';
 const router = express.Router();
 
 // Example: Get all users
@@ -70,6 +70,25 @@ router.delete('/:id', async (req, res) => {
         res.status(200).send({ message: `User with ID: ${userId} deleted` });
     } catch (error) {
         res.status(500).send({ error: 'Internal Server Error' });
+    }
+});
+
+router.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Validate input
+        if (!username || !password) {
+            return res.status(400).send({ error: 'Username and password are required' });
+        }
+
+        // Call the loginUser function from the service
+        const user = await loginUser(username, password);
+
+        // Return the user details and token
+        res.status(200).send({ message: 'Login successful', data: user });
+    } catch (error) {
+        res.status(401).send({ error: 'Invalid credentials', details: error.message });
     }
 });
 
