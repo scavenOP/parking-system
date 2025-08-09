@@ -12,6 +12,8 @@
       
       <!-- Show when user IS logged in -->
       <ng-container *ngIf="currentUser">
+        <a routerLink="/parking-search" class="nav-link" routerLinkActive="active">Find Parking</a>
+        <a routerLink="/cars" class="nav-link" routerLinkActive="active">My Cars</a>
         <a routerLink="/dashboard" class="nav-link" routerLinkActive="active">Dashboard</a>
         <span class="user-welcome">Welcome, {{currentUser.Name}}!</span>
         <button class="nav-link logout-btn" (click)="logout()">Logout</button>

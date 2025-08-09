@@ -1,0 +1,100 @@
+<section class="reservations-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>My Reservations</h2>
+      <div class="filter-tabs">
+        <button 
+          class="filter-tab" 
+          [class.active]="selectedFilter === 'all'"
+          (click)="selectedFilter = 'all'; filterBookings()">
+          All
+        </button>
+        <button 
+          class="filter-tab" 
+          [class.active]="selectedFilter === 'active'"
+          (click)="selectedFilter = 'active'; filterBookings()">
+          Active
+        </button>
+        <button 
+          class="filter-tab" 
+          [class.active]="selectedFilter === 'completed'"
+          (click)="selectedFilter = 'completed'; filterBookings()">
+          Completed
+        </button>
+        <button 
+          class="filter-tab" 
+          [class.active]="selectedFilter === 'cancelled'"
+          (click)="selectedFilter = 'cancelled'; filterBookings()">
+          Cancelled
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Loading your reservations...</p>
+    </div>
+
+    <!-- Reservations List -->
+    <div class="reservations-list" *ngIf="!isLoading && filteredBookings.length > 0">
+      <div class="reservation-card" *ngFor="let booking of filteredBookings" [@fadeInUp]>
+        <div class="reservation-header">
+          <div class="space-info">
+            <h4>Space {{booking.spaceId.spaceNumber}}</h4>
+            <span class="floor-badge">Floor {{booking.spaceId.floor}}</span>
+          </div>
+          <div class="status-badge" [ngClass]="booking.status">
+            {{booking.status | titlecase}}
+          </div>
+        </div>
+
+        <div class="reservation-details">
+          <div class="detail-row">
+            <span class="label">Vehicle:</span>
+            <span class="value">{{booking.carId.make}} {{booking.carId.model}} - {{booking.carId.licensePlate}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Start Time:</span>
+            <span class="value">{{formatDateTime(booking.startTime)}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">End Time:</span>
+            <span class="value">{{formatDateTime(booking.endTime)}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Duration:</span>
+            <span class="value">{{calculateDuration(booking.startTime, booking.endTime)}} hours</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Amount:</span>
+            <span class="value amount">₹{{booking.totalAmount}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Booked On:</span>
+            <span class="value">{{formatDateTime(booking.createdAt)}}</span>
+          </div>
+        </div>
+
+        <div class="reservation-actions" *ngIf="booking.status === 'active'">
+          <button 
+            class="btn-cancel" 
+            (click)="cancelBooking(booking._id)"
+            [disabled]="isCancelling">
+            <span *ngIf="!isCancelling">Cancel Reservation</span>
+            <span *ngIf="isCancelling">Cancelling...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && filteredBookings.length === 0">
+      <div class="empty-icon">📅</div>
+      <h3>No {{selectedFilter === 'all' ? '' : selectedFilter}} reservations found</h3>
+      <p *ngIf="selectedFilter === 'all'">You haven't made any parking reservations yet.</p>
+      <p *ngIf="selectedFilter !== 'all'">You don't have any {{selectedFilter}} reservations.</p>
+      <a routerLink="/parking-search" class="btn-primary">Book Your First Spot</a>
+    </div>
+  </div>
+</section>

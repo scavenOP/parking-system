@@ -1,0 +1,140 @@
+<section class="parking-search">
+  <div class="container">
+    <!-- Search Form -->
+    <div class="search-form-container">
+      <h2>Find Your Perfect Parking Spot</h2>
+      <form [formGroup]="searchForm" class="search-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Date & Time</label>
+            <input type="datetime-local" formControlName="startTime" required>
+          </div>
+          <div class="form-group">
+            <label>End Date & Time</label>
+            <input type="datetime-local" formControlName="endTime" required>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Select Vehicle</label>
+            <select formControlName="selectedCar" required>
+              <option value="">Choose your vehicle</option>
+              <option *ngFor="let car of availableCars" [value]="car._id">
+                {{car.make}} {{car.model}} - {{car.licensePlate}}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Floor (Optional)</label>
+            <select formControlName="selectedFloor">
+              <option value="">All Floors</option>
+              <option value="1">Floor 1</option>
+              <option value="2">Floor 2</option>
+              <option value="3">Floor 3</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Form Validation Errors -->
+        <div class="form-errors" *ngIf="searchForm.errors">
+          <div class="error-message" *ngIf="searchForm.errors['pastStartTime']">
+            ⚠️ Start time cannot be in the past
+          </div>
+          <div class="error-message" *ngIf="searchForm.errors['endTimeBeforeStart']">
+            ⚠️ End time must be after start time
+          </div>
+        </div>
+
+        <button type="button" class="search-btn" (click)="searchSpaces()" [disabled]="searchForm.invalid || isSearching">
+          <span *ngIf="!isSearching">🔍 Search Available Spaces</span>
+          <span *ngIf="isSearching">Searching...</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Floor Tabs -->
+    <div class="floor-tabs" *ngIf="availableSpaces.length > 0">
+      <button 
+        *ngFor="let floor of [1, 2, 3]" 
+        class="floor-tab"
+        [class.active]="selectedFloorView === floor"
+        (click)="selectedFloorView = floor">
+        Floor {{floor}}
+        <span class="available-count">({{getFloorSpaceCount(floor)}} available)</span>
+      </button>
+    </div>
+
+    <!-- Parking Floor Plan -->
+    <div class="floor-plan" *ngIf="availableSpaces.length > 0">
+      <h3>Floor {{selectedFloorView}} - Parking Layout</h3>
+      <div class="parking-grid">
+        <div 
+          *ngFor="let space of getFloorSpaces(selectedFloorView)" 
+          class="parking-space"
+          [class.available]="isSpaceAvailable(space)"
+          [class.occupied]="!isSpaceAvailable(space)"
+          [class.selected]="selectedSpace?._id === space._id"
+          (click)="selectSpace(space)">
+          <div class="space-number">{{space.spaceNumber}}</div>
+          <div class="space-status">
+            <span *ngIf="isSpaceAvailable(space)">✓</span>
+            <span *ngIf="!isSpaceAvailable(space)">✗</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Legend -->
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color available"></div>
+          <span>Available</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color occupied"></div>
+          <span>Occupied</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color selected"></div>
+          <span>Selected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Booking Summary -->
+    <div class="booking-summary" *ngIf="selectedSpace" [@slideUp]>
+      <h3>Booking Summary</h3>
+      <div class="summary-details">
+        <div class="detail-row">
+          <span>Parking Space:</span>
+          <span class="highlight">{{selectedSpace.spaceNumber}} (Floor {{selectedSpace.floor}})</span>
+        </div>
+        <div class="detail-row">
+          <span>Vehicle:</span>
+          <span class="highlight">{{getSelectedCarDetails()}}</span>
+        </div>
+        <div class="detail-row">
+          <span>Duration:</span>
+          <span class="highlight">{{calculateDuration()}} hours</span>
+        </div>
+        <div class="detail-row">
+          <span>Total Amount:</span>
+          <span class="highlight amount" *ngIf="!isCalculatingAmount">₹{{calculatedAmount}}</span>
+          <span class="highlight amount" *ngIf="isCalculatingAmount">Calculating...</span>
+        </div>
+      </div>
+      
+      <button class="book-btn" (click)="bookSpace()" [disabled]="isBooking">
+        <span *ngIf="!isBooking">🎫 Book This Space</span>
+        <span *ngIf="isBooking">Booking...</span>
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="hasSearched && availableSpaces.length === 0">
+      <div class="empty-icon">🚫</div>
+      <h3>No Available Spaces</h3>
+      <p>Sorry, no parking spaces are available for the selected time period. Please try different dates or times.</p>
+    </div>
+  </div>
+</section>
