@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, PLATFORM_ID, Inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, PLATFORM_ID, Inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
@@ -21,11 +21,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      email: ['', [Validators.required]],
+      password: ['', [Validators.required]]
     });
   }
 
@@ -90,21 +91,29 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   onSubmit() {
     if (this.loginForm.valid && !this.isSubmitting) {
+      console.log('Setting isSubmitting to true');
       this.isSubmitting = true;
+      this.cdr.detectChanges();
+      
       const { email, password } = this.loginForm.value;
 
       this.authService.login({ username: email, password }).subscribe({
         next: (response) => {
           console.log('Login successful:', response);
-          this.isSubmitting = false;
           
           // Store user data and redirect
           this.authService.setCurrentUser(response.data);
           this.router.navigate([this.returnUrl]);
+          
+          console.log('Setting isSubmitting to false (success)');
+          this.isSubmitting = false;
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Login failed:', error);
+          console.log('Setting isSubmitting to false (error)');
           this.isSubmitting = false;
+          this.cdr.detectChanges();
           // Handle error (e.g., show error message)
         }
       });

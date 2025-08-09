@@ -211,14 +211,12 @@
       transform: translate(-50%, -50%);
       opacity: 0;
       animation: rotate 1s linear infinite;
-
-      &.active {
-        opacity: 1;
-      }
+      transition: opacity 0.3s ease;
     }
 
     .btn-text {
       transition: opacity 0.3s ease;
+      display: inline-block;
     }
   }
 

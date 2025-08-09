@@ -14,8 +14,7 @@
           <input 
             type="email" 
             placeholder="Enter your email address" 
-            formControlName="email"
-            [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            formControlName="email">
           <span class="form-bar"></span>
           <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
             Please enter a valid email address
@@ -35,9 +34,8 @@
         </div>
         
         <button type="submit" class="submit-btn" [disabled]="loginForm.invalid || isSubmitting">
-          <span class="btn-text" *ngIf="!isSubmitting">Sign In</span>
-          <span class="btn-text" *ngIf="isSubmitting">Signing In...</span>
-          <span class="btn-loader" [class.active]="isSubmitting"></span>
+          <span class="btn-text" [style.opacity]="isSubmitting ? '0' : '1'">{{isSubmitting ? 'Signing In...' : 'Sign In'}}</span>
+          <span class="btn-loader" [style.opacity]="isSubmitting ? '1' : '0'"></span>
         </button>
         
         <div class="form-links">

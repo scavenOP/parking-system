@@ -1,59 +1,259 @@
-# ParkingSystemWebUI
+# Smart City Parking System - Web UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.5.
+A modern, responsive Angular web application for premium city parking management with enterprise-grade authentication and beautiful animations.
 
-## Development server
+## 🚀 Features
 
-To start a local development server, run:
+- **🔐 Enterprise Authentication**: Secure cookie-based auth with cross-tab persistence
+- **🎨 Modern UI/UX**: Glassmorphism design with smooth animations
+- **📱 Responsive Design**: Mobile-first approach with adaptive layouts
+- **🔄 Real-time Updates**: Dynamic API detection and automatic token injection
+- **⚡ Performance**: Optimized with Angular 17+ standalone components
+- **🛡️ Security**: CSRF protection, secure cookies, and input validation
 
+## 🏗️ Architecture
+
+### Components Structure
+```
+src/app/
+├── shared/
+│   ├── header/          # Navigation header
+│   └── footer/          # Site footer
+├── home/                # Landing page
+├── login/               # Authentication
+├── signup/              # User registration
+├── dashboard/           # User dashboard
+├── services/
+│   ├── auth.service.ts  # Authentication logic
+│   └── cookie.service.ts # Secure cookie management
+└── interceptors/
+    └── auth.interceptor.ts # HTTP token injection
+```
+
+### Authentication Flow
+1. **Login**: Stores auth token in secure cookie + user data in accessible cookie
+2. **API Calls**: Interceptor automatically adds `Authorization: Bearer <token>`
+3. **Cross-Tab**: Cookies shared across all browser tabs
+4. **Logout**: Complete cookie cleanup
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+- Node.js 18+
+- Angular CLI 17+
+- Express.js API server running
+
+### Install Dependencies
+```bash
+npm install
+```
+
+### Development Server
 ```bash
 ng serve
 ```
+Navigate to `http://localhost:4200/`
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### Build for Production
 ```bash
-ng generate component component-name
+ng build --configuration production
+```
+Output: `../API-Service/public/`
+
+## 🔧 Configuration
+
+### API Integration
+The app automatically detects the Express server URL:
+- Development: `http://localhost:3000/api`
+- Production: Dynamic host detection
+
+### Cookie Security Settings
+```typescript
+// Production settings
+secure: true,        // HTTPS only
+sameSite: 'strict',  // CSRF protection
+expires: 7,          // 7 days
+httpOnly: false      // JS accessible for user data
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🎨 UI Components
 
+### Home Page
+- Hero section with animated form
+- Feature showcase with hover effects
+- FAQ with expandable sections
+- Parallax scrolling effects
+
+### Authentication
+- Glassmorphism login/signup forms
+- Real-time validation
+- Loading states with spinners
+- Error handling with animations
+
+### Responsive Design
+- Mobile-first approach
+- Breakpoints: 768px, 1024px, 1200px
+- Touch-friendly interactions
+
+## 🔐 Security Features
+
+### Authentication
+- Secure cookie storage
+- Automatic token refresh
+- Cross-tab session sharing
+- CSRF protection
+
+### Data Protection
+- Input sanitization
+- XSS prevention
+- Secure HTTP headers
+- Privacy-focused cookie handling
+
+## 📱 Browser Support
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+## 🚀 Deployment
+
+### Development
 ```bash
-ng generate --help
+ng serve --host 0.0.0.0 --port 4200
 ```
 
-## Building
-
-To build the project run:
-
+### Production Build
 ```bash
-ng build
+ng build --configuration production
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Docker (Optional)
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY dist/ ./dist/
+EXPOSE 4200
+CMD ["npm", "start"]
+```
 
-## Running unit tests
+## 🧪 Testing
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+### Unit Tests
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
+### E2E Tests
 ```bash
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Build Verification
+```bash
+ng build --watch
+```
 
-## Additional Resources
+## 📦 Dependencies
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Core
+- Angular 17+
+- RxJS 7+
+- TypeScript 5+
+
+### UI/UX
+- SCSS for styling
+- CSS animations
+- Responsive grid system
+
+### Security
+- js-cookie for secure cookie management
+- HTTP interceptors for token injection
+
+## 🔄 API Integration
+
+### Endpoints
+```typescript
+POST /api/User/login     // User authentication
+POST /api/User/signup    // User registration
+GET  /api/health         // Server health check
+```
+
+### Request/Response Format
+```typescript
+// Login Request
+{
+  username: string,
+  password: string
+}
+
+// Login Response
+{
+  message: string,
+  data: {
+    UserId: string,
+    Name: string,
+    Email: string,
+    Role: string,
+    Token: string
+  }
+}
+```
+
+## 🎯 Performance Optimizations
+
+- Lazy loading routes
+- OnPush change detection
+- Standalone components
+- Tree-shaking enabled
+- Minification and compression
+- Image optimization
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Build Errors**
+```bash
+# Clear cache
+ng cache clean
+npm ci
+```
+
+**Authentication Issues**
+```bash
+# Check cookies in DevTools
+# Verify API server is running
+# Check CORS settings
+```
+
+**Styling Issues**
+```bash
+# Rebuild with styles
+ng build --extract-css
+```
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+## 📞 Support
+
+For support and questions:
+- Create an issue on GitHub
+- Email: support@smartcityparking.com
+- Documentation: [Wiki](./wiki)
+
+---
+
+**Built with ❤️ using Angular 17+ and modern web technologies**
