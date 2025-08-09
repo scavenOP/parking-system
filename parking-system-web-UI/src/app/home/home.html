@@ -1,0 +1,155 @@
+<section class="hero parallax">
+  <div class="hero-background"></div>
+  <div class="hero-content animate-on-scroll">
+    <div class="hero-text">
+      <div class="parking-icon bounce">🅿️</div>
+      <h1 class="fade-in-up">Premium City Parking Made Easy</h1>
+      <p class="fade-in-up delay-1">Find your perfect parking spot in seconds</p>
+    </div>
+    <div class="hero-form slide-in-right">
+      <h3>Quick Services Request</h3>
+      <h6>24 Hours Services Available!</h6>
+      <form class="contact-form" (submit)="onSubmit($event)">
+        <div class="form-group">
+          <input type="email" placeholder="Enter a valid email address" required>
+          <span class="form-bar"></span>
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Enter your Name" required>
+          <span class="form-bar"></span>
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Zipcode">
+          <span class="form-bar"></span>
+        </div>
+        <div class="form-group">
+          <input type="tel" placeholder="Enter your phone" required>
+          <span class="form-bar"></span>
+        </div>
+        <div class="form-group">
+          <textarea placeholder="Enter your message" rows="4" required></textarea>
+          <span class="form-bar"></span>
+        </div>
+        <button type="submit" class="submit-btn">
+          <span class="btn-text">Submit</span>
+          <span class="btn-loader"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="features animate-on-scroll">
+  <div class="features-content">
+    <div class="feature-image parallax-image">
+      <img src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=600&h=400&fit=crop" alt="Parking lot" class="hover-zoom">
+    </div>
+    <div class="feature-text slide-in-left">
+      <h2>Find and book your perfect parking spot in seconds</h2>
+      <p>Whether you're commuting to work, heading downtown, or catching a flight — we've got a parking space waiting for you.</p>
+      <button class="btn-primary pulse-on-hover">Find Parking</button>
+    </div>
+  </div>
+</section>
+
+<section class="why-choose animate-on-scroll">
+  <h2 class="fade-in-up">Why Choose Us?</h2>
+  <div class="features-grid">
+    <div class="feature-item hover-lift" style="animation-delay: 0.1s">
+      <div class="feature-icon rotate-on-hover">⏰</div>
+      <h5>Real-Time Availability</h5>
+      <p>Instantly see which spots are free across the city.</p>
+    </div>
+    <div class="feature-item hover-lift" style="animation-delay: 0.2s">
+      <div class="feature-icon rotate-on-hover">💳</div>
+      <h5>Easy Payments</h5>
+      <p>Pay by card, mobile app, or online — no cash, no hassle.</p>
+    </div>
+    <div class="feature-item hover-lift" style="animation-delay: 0.3s">
+      <div class="feature-icon rotate-on-hover">🔒</div>
+      <h5>Safe & Secure</h5>
+      <p>24/7 monitored and gated lots for your peace of mind.</p>
+    </div>
+    <div class="feature-item hover-lift" style="animation-delay: 0.4s">
+      <div class="feature-icon rotate-on-hover">📅</div>
+      <h5>Flexible Plans</h5>
+      <p>Hourly, daily, and monthly options to fit your schedule and budget.</p>
+    </div>
+  </div>
+</section>
+
+<section class="how-it-works animate-on-scroll">
+  <div class="how-content">
+    <div class="how-text slide-in-left">
+      <h2>How It Works:</h2>
+      <div class="steps">
+        <div class="step fade-in-up" style="animation-delay: 0.1s">
+          <div class="step-number">1</div>
+          <h5>Search Your Location</h5>
+          <p>Use our app or website to find nearby parking.</p>
+        </div>
+        <div class="step fade-in-up" style="animation-delay: 0.2s">
+          <div class="step-number">2</div>
+          <h5>Reserve or Drive-In</h5>
+          <p>Book in advance or just pull up to any available lot.</p>
+        </div>
+        <div class="step fade-in-up" style="animation-delay: 0.3s">
+          <div class="step-number">3</div>
+          <h5>Park & Go</h5>
+          <p>Your space is guaranteed — no circling the block.</p>
+        </div>
+      </div>
+    </div>
+    <div class="how-image slide-in-right">
+      <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&h=500&fit=crop" alt="How it works" class="hover-zoom">
+    </div>
+  </div>
+</section>
+
+<section class="faq animate-on-scroll">
+  <h2 class="fade-in-up">Frequently Asked Questions</h2>
+  <div class="faq-container">
+    <div class="faq-item expandable" onclick="this.classList.toggle('expanded')">
+      <h4>Do I need to reserve in advance? <span class="faq-icon">+</span></h4>
+      <p>No, you can reserve in advance for guaranteed spots or use our drive-in feature to find available parking on the go.</p>
+    </div>
+    <div class="faq-item expandable" onclick="this.classList.toggle('expanded')">
+      <h4>How do I extend my parking time? <span class="faq-icon">+</span></h4>
+      <p>Simply use our mobile app to extend your parking session with just a few taps. You'll receive notifications before your time expires.</p>
+    </div>
+    <div class="faq-item expandable" onclick="this.classList.toggle('expanded')">
+      <h4>Is my payment information secure? <span class="faq-icon">+</span></h4>
+      <p>Yes, we use bank-level encryption and secure payment processing to protect all your financial information.</p>
+    </div>
+  </div>
+</section>
+
+<section class="contact animate-on-scroll">
+  <div class="contact-content">
+    <div class="contact-text slide-in-left">
+      <h2>Have Questions?</h2>
+      <h4>We're here to help</h4>
+      <p>Offer convenient, managed parking for your employees and visitors. Contact us to learn about our corporate solutions.</p>
+      <div class="contact-info">
+        <div class="contact-item">
+          <span class="contact-icon">📞</span>
+          <div>
+            <strong>Call us:</strong><br>
+            <a href="tel:+18001234567">+1 (800) 123-4567</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">✉️</span>
+          <div>
+            <strong>Email:</strong><br>
+            <a href="mailto:support@parking.com">support@parking.com</a>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary pulse-on-hover">Order a call</button>
+    </div>
+    <div class="contact-image slide-in-right">
+      <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop" alt="Contact us" class="hover-zoom">
+    </div>
+  </div>
+</section>
