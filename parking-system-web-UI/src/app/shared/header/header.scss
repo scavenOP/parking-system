@@ -121,6 +121,43 @@
         border-radius: 2px;
       }
     }
+
+    &.signup-btn {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      border: 1px solid rgba(255,255,255,0.3);
+      font-weight: 600;
+      
+      &:hover {
+        background: linear-gradient(135deg, #ff5252, #d63031);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(255,107,107,0.4);
+      }
+    }
+  }
+
+  .user-welcome {
+    color: rgba(255,255,255,0.9);
+    padding: 0.8rem 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+  }
+
+  .logout-btn {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.9);
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: linear-gradient(135deg, #c82333, #bd2130);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(220,53,69,0.4);
+    }
   }
 }
 

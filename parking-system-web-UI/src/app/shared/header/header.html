@@ -3,6 +3,19 @@
     <img src="https://assets.nicepagecdn.com/11a8ddce/6546849/images/Untitled-1.jpg" alt="Smart Parking Logo" class="logo">
     <nav class="nav">
       <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      
+      <!-- Show when user is NOT logged in -->
+      <ng-container *ngIf="!currentUser">
+        <a routerLink="/login" class="nav-link" routerLinkActive="active">Sign In</a>
+        <a routerLink="/signup" class="nav-link signup-btn" routerLinkActive="active">Sign Up</a>
+      </ng-container>
+      
+      <!-- Show when user IS logged in -->
+      <ng-container *ngIf="currentUser">
+        <a routerLink="/dashboard" class="nav-link" routerLinkActive="active">Dashboard</a>
+        <span class="user-welcome">Welcome, {{currentUser.Name}}!</span>
+        <button class="nav-link logout-btn" (click)="logout()">Logout</button>
+      </ng-container>
     </nav>
   </div>
 </header>

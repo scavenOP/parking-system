@@ -73,6 +73,45 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+router.post('/signup', async (req, res) => {
+    try {
+        // Map frontend field names to backend field names
+        const { name, email, address, dateOfBirth, password } = req.body;
+        
+        const userData = {
+            Name: name,
+            Email: email,
+            Address: address,
+            DateOfBirth: dateOfBirth,
+            Password: password
+        };
+
+        // List required fields as per your UserModel
+        const requiredFields = ['Name', 'Email', 'DateOfBirth', 'Address', 'Password'];
+        const missingFields = requiredFields.filter(field => !userData[field]);
+
+        if (missingFields.length > 0) {
+            return res.status(400).send({ 
+                success: false, 
+                message: `Missing fields: ${missingFields.join(', ')}` 
+            });
+        }
+
+        const newUser = await createUser(userData);
+        res.status(201).send({ 
+            success: true, 
+            message: 'User created successfully', 
+            user: newUser 
+        });
+    } catch (error) {
+        res.status(500).send({ 
+            success: false, 
+            message: 'Failed to create user', 
+            error: error.message 
+        });
+    }
+});
+
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;

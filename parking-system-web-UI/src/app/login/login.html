@@ -1,0 +1,51 @@
+<section class="hero parallax">
+  <div class="hero-background"></div>
+  <div class="hero-content animate-on-scroll">
+    <div class="hero-text">
+      <div class="parking-icon bounce">🅿️</div>
+      <h1 class="fade-in-up">Welcome Back</h1>
+      <p class="fade-in-up delay-1">Sign in to your Premium City Parking account</p>
+    </div>
+    <div class="hero-form slide-in-right">
+      <h3>Sign In</h3>
+      <h6>Access your parking dashboard!</h6>
+      <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <input 
+            type="email" 
+            placeholder="Enter your email address" 
+            formControlName="email"
+            [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span class="form-bar"></span>
+          <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            Please enter a valid email address
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <input 
+            type="password" 
+            placeholder="Enter your password" 
+            formControlName="password"
+            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <span class="form-bar"></span>
+          <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            Password is required (minimum 6 characters)
+          </div>
+        </div>
+        
+        <button type="submit" class="submit-btn" [disabled]="loginForm.invalid || isSubmitting">
+          <span class="btn-text" *ngIf="!isSubmitting">Sign In</span>
+          <span class="btn-text" *ngIf="isSubmitting">Signing In...</span>
+          <span class="btn-loader" [class.active]="isSubmitting"></span>
+        </button>
+        
+        <div class="form-links">
+          <p>Don't have an account? 
+            <a routerLink="/signup" [queryParams]="{returnUrl: returnUrl}" class="auth-link">Sign Up</a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

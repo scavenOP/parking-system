@@ -1,18 +1,30 @@
 import { Component, OnInit, AfterViewInit, PLATFORM_ID, Inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
+import { AuthService, UserViewModel } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
+  currentUser: UserViewModel | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
+    // Subscribe to current user changes
+    this.authService.currentUser$.subscribe((user: any) => {
+      this.currentUser = user;
+    });
+    
     if (isPlatformBrowser(this.platformId)) {
       this.initHeaderAnimations();
     }
@@ -43,5 +55,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         }
       });
     }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 }

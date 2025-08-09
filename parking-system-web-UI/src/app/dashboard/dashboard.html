@@ -1,0 +1,46 @@
+<section class="dashboard">
+  <div class="dashboard-content">
+    <div class="welcome-section">
+      <h1>Welcome to Your Dashboard</h1>
+      <p>Hello, {{currentUser?.Name}}! This is a protected page that requires authentication.</p>
+    </div>
+    
+    <div class="user-info">
+      <h3>Your Information</h3>
+      <div class="info-card">
+        <p><strong>User ID:</strong> {{currentUser?.UserId}}</p>
+        <p><strong>Name:</strong> {{currentUser?.Name}}</p>
+        <p><strong>Email:</strong> {{currentUser?.Email}}</p>
+        <p><strong>Address:</strong> {{currentUser?.Address}}</p>
+        <p><strong>Date of Birth:</strong> {{currentUser?.DateOfBirth}}</p>
+        <p><strong>Role:</strong> {{currentUser?.Role}}</p>
+      </div>
+    </div>
+    
+    <div class="features-section">
+      <h3>Available Features</h3>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🅿️</div>
+          <h4>Find Parking</h4>
+          <p>Search for available parking spots near you</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h4>Reservations</h4>
+          <p>View and manage your parking reservations</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💳</div>
+          <h4>Payment History</h4>
+          <p>Track your parking payments and receipts</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚙️</div>
+          <h4>Settings</h4>
+          <p>Manage your account preferences</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

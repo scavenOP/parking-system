@@ -1,0 +1,89 @@
+<section class="hero parallax">
+  <div class="hero-background"></div>
+  <div class="hero-content animate-on-scroll">
+    <div class="hero-text">
+      <div class="parking-icon bounce">🅿️</div>
+      <h1 class="fade-in-up">Join Premium City Parking</h1>
+      <p class="fade-in-up delay-1">Create your account and start parking smarter</p>
+    </div>
+    <div class="hero-form slide-in-right">
+      <h3>Sign Up</h3>
+      <h6>Join thousands of satisfied customers!</h6>
+      <form class="signup-form" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <input 
+            type="text" 
+            placeholder="Enter your full name" 
+            formControlName="name"
+            [class.error]="signupForm.get('name')?.invalid && signupForm.get('name')?.touched">
+          <span class="form-bar"></span>
+          <div class="error-message" *ngIf="signupForm.get('name')?.invalid && signupForm.get('name')?.touched">
+            Name is required (minimum 2 characters)
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <input 
+            type="email" 
+            placeholder="Enter a valid email address" 
+            formControlName="email"
+            [class.error]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+          <span class="form-bar"></span>
+          <div class="error-message" *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+            Please enter a valid email address
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <input 
+            type="text" 
+            placeholder="Enter your address" 
+            formControlName="address"
+            [class.error]="signupForm.get('address')?.invalid && signupForm.get('address')?.touched">
+          <span class="form-bar"></span>
+          <div class="error-message" *ngIf="signupForm.get('address')?.invalid && signupForm.get('address')?.touched">
+            Address is required
+          </div>
+        </div>
+        
+        <div class="form-group date-group">
+          <input 
+            type="date" 
+            placeholder="Select date of birth" 
+            formControlName="dateOfBirth"
+            [class.error]="signupForm.get('dateOfBirth')?.invalid && signupForm.get('dateOfBirth')?.touched"
+            (click)="openDatePicker($event)">
+          <span class="form-bar"></span>
+          <div class="calendar-icon" (click)="openDatePicker($event)">📅</div>
+          <div class="error-message" *ngIf="signupForm.get('dateOfBirth')?.invalid && signupForm.get('dateOfBirth')?.touched">
+            Date of birth is required
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <input 
+            type="password" 
+            placeholder="Enter your password" 
+            formControlName="password"
+            [class.error]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+          <span class="form-bar"></span>
+          <div class="error-message" *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+            Password is required (minimum 6 characters)
+          </div>
+        </div>
+        
+        <button type="submit" class="submit-btn" [disabled]="signupForm.invalid || isSubmitting">
+          <span class="btn-text" *ngIf="!isSubmitting">Sign Up</span>
+          <span class="btn-text" *ngIf="isSubmitting">Creating Account...</span>
+          <span class="btn-loader" [class.active]="isSubmitting"></span>
+        </button>
+        
+        <div class="form-links">
+          <p>Already have an account? 
+            <a routerLink="/login" [queryParams]="{returnUrl: returnUrl}" class="auth-link">Sign In</a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
