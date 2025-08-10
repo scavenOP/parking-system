@@ -40,7 +40,8 @@ jobs:
       run: |
         mkdir deploy
         cp -r API-Service/* deploy/
-        cp package.json deploy/ 2>/dev/null || echo "No root package.json"
+        cp package.json deploy/
+        ls -la deploy/
     
     - name: Azure Login
       uses: azure/login@v1

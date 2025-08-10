@@ -2,9 +2,9 @@
   "name": "parking-system",
   "version": "1.0.0",
   "description": "Smart City Parking System",
-  "main": "API-Service/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node API-Service/index.js",
+    "start": "node index.js",
     "build": "cd parking-system-web-UI && npm run build"
   },
   "engines": {
