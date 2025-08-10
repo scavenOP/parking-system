@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ParkingService } from '../services/parking.service';
 import { PaymentService } from '../services/payment.service';
+import { TicketService } from '../services/ticket.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var Razorpay: any;
@@ -48,10 +49,12 @@ export class ReservationsComponent implements OnInit {
   isLoading = false;
   isCancelling = false;
   isProcessingPayment = false;
+  ticketQRs: { [key: string]: string } = {};
 
   constructor(
     private parkingService: ParkingService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private ticketService: TicketService
   ) {}
 
   ngOnInit() {
@@ -200,5 +203,23 @@ export class ReservationsComponent implements OnInit {
       console.error('Payment failure handling error:', error);
     }
     this.isProcessingPayment = false;
+  }
+
+  async loadTicket(bookingId: string) {
+    try {
+      const response = await this.ticketService.getUserTickets().toPromise();
+      if (response.success) {
+        const ticket = response.data.find((t: any) => t.bookingId._id === bookingId);
+        if (ticket) {
+          this.ticketQRs[bookingId] = ticket.qrCodeData;
+        }
+      }
+    } catch (error) {
+      console.error('Error loading ticket:', error);
+    }
+  }
+
+  getTicketQR(bookingId: string): string {
+    return this.ticketQRs[bookingId] || '';
   }
 }

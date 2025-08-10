@@ -3,6 +3,8 @@ import express, { json } from 'express';
 import UserRouter from './Routes/User-route.js';
 import db from './db/conn.js'
 import path from 'path';
+import { websiteLogger } from './Services/Logger.js';
+import fs from 'fs';
 const app = express();
 const router = express.Router();
 const PORT = process.env.PORT || 8000; 
@@ -31,9 +33,24 @@ app.use("/api/parking", ParkingRouter);
 import PaymentRouter from './Routes/Payment-route.js';
 app.use("/api/payment", PaymentRouter);
 
+// Import and use ticket routes
+import TicketRouter from './Routes/Ticket-route.js';
+app.use("/api/ticket", TicketRouter);
+
+// Start scheduled jobs
+import JobScheduler from './Services/JobScheduler.js';
+JobScheduler.startScheduledJobs();
+
+// Import and use admin routes
+import AdminRouter from './Routes/Admin-route.js';
+app.use("/api/admin", AdminRouter);
+
 // Serve static files from the Angular app
 const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, 'public', 'browser')));
+app.use(express.static(path.join(__dirname, 'public', 'browser'), {
+  maxAge: '1d',
+  etag: false
+}));
 
 
 
@@ -51,6 +68,14 @@ router.get("/transaction", async (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'browser', 'index.html'));
   });
 
+// Create logs directory if it doesn't exist
+const logsDir = path.join(process.cwd(), 'logs');
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true });
+}
+
 app.listen(PORT, () => {
-    console.log(`Server started at http://localhost:${PORT}`);
+    const message = `Server started at http://localhost:${PORT}`;
+    console.log(message);
+    websiteLogger.info(message);
 });

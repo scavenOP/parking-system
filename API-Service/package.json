@@ -16,8 +16,11 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.1",
     "mongoose-sequence": "^6.0.1",
+    "node-cron": "^4.2.1",
     "parking-system": "file:",
-    "razorpay": "^2.9.6"
+    "qrcode": "^1.5.4",
+    "razorpay": "^2.9.6",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.1"

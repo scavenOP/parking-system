@@ -17,6 +17,12 @@
         </button>
         <button 
           class="filter-tab" 
+          [class.active]="selectedFilter === 'in_progress'"
+          (click)="selectedFilter = 'in_progress'; filterBookings()">
+          In Progress
+        </button>
+        <button 
+          class="filter-tab" 
           [class.active]="selectedFilter === 'completed'"
           (click)="selectedFilter = 'completed'; filterBookings()">
           Completed
@@ -47,6 +53,17 @@
           <div class="status-badge" [ngClass]="booking.status">
             {{booking.status | titlecase}}
           </div>
+        </div>
+        
+        <!-- Show QR ticket for active bookings -->
+        <div class="qr-ticket" *ngIf="booking.status === 'active' && booking.paymentStatus === 'completed'">
+          <img [src]="getTicketQR(booking._id)" alt="QR Ticket" class="qr-code" *ngIf="ticketQRs[booking._id]">
+          <button class="btn-show-qr" (click)="loadTicket(booking._id)" *ngIf="!ticketQRs[booking._id]">
+            🎫 Show QR Ticket
+          </button>
+        </div>
+        
+        <div class="reservation-header">
         </div>
 
         <div class="reservation-details">
@@ -96,6 +113,11 @@
             <span *ngIf="!isCancelling">Cancel Reservation</span>
             <span *ngIf="isCancelling">Cancelling...</span>
           </button>
+          
+          <!-- Show status info for in_progress bookings -->
+          <div *ngIf="booking.status === 'in_progress'" class="status-info">
+            <p>🚗 Parking session active until {{formatDateTime(booking.endTime)}}</p>
+          </div>
         </div>
       </div>
     </div>

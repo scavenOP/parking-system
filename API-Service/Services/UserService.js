@@ -48,10 +48,10 @@ export async function createUser(userData) {
 }
 
 export async function loginUser(username, password) {
-    // Find the user by username or email
+    // Find the user by username or email and populate role
     const user = await UserModel.findOne({
         $or: [{ Username: username }, { Email: username }],
-    });
+    }).populate('Role');
 
     if (!user) {
         throw new Error('User not found');
@@ -66,7 +66,7 @@ export async function loginUser(username, password) {
 
     // Generate a JWT token
     const token = jwt.sign(
-        { userId: user._id, role: user.Role }, // Payload
+        { userId: user._id, role: user.Role ? user.Role.RoleName : 'User' }, // Use role name
         process.env.JWT_SECRET, // Secret key from .env
         { expiresIn: '1h' } // Token expiration time
     );
@@ -78,7 +78,7 @@ export async function loginUser(username, password) {
         Email: user.Email,
         DateOfBirth: user.DateOfBirth,
         Address: user.Address,
-        Role: user.Role,
+        Role: user.Role ? user.Role.RoleName : 'User', // Send role name
         Token: token,
     };
 }

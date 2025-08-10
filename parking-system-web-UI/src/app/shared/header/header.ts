@@ -57,6 +57,14 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
   }
 
+  isUser(): boolean {
+    return this.currentUser?.Role === 'User';
+  }
+
+  isAdmin(): boolean {
+    return this.currentUser?.Role === 'Admin';
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/']);

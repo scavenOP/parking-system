@@ -129,6 +129,24 @@ export class AuthService {
     return this.getTokenFromCache() !== null;
   }
 
+  getUserRole(): string | null {
+    const userData = this.cookieService.get('user_data');
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        return user.Role;
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'Admin';
+  }
+
   logout(): void {
     // Clear all auth-related cookies
     this.cookieService.remove('auth_token');

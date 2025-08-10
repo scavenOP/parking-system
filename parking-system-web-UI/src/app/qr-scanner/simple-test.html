@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Camera Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 2rem; }
+        video { width: 100%; max-width: 500px; height: 400px; background: #000; }
+        .status { margin: 1rem 0; padding: 1rem; background: #f0f0f0; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h2>Camera Test</h2>
+    <video id="video" autoplay playsinline muted></video>
+    <div class="status" id="status">Requesting camera access...</div>
+    <button onclick="startCamera()">Start Camera</button>
+    <button onclick="stopCamera()">Stop Camera</button>
+
+    <script>
+        let stream = null;
+        const video = document.getElementById('video');
+        const status = document.getElementById('status');
+
+        async function startCamera() {
+            try {
+                status.textContent = 'Starting camera...';
+                
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: 'environment',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
+                
+                video.srcObject = stream;
+                status.textContent = '✅ Camera active';
+                status.style.background = '#d4edda';
+                
+            } catch (error) {
+                console.error('Camera error:', error);
+                status.textContent = `❌ Camera error: ${error.message}`;
+                status.style.background = '#f8d7da';
+            }
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                status.textContent = 'Camera stopped';
+                status.style.background = '#f0f0f0';
+            }
+        }
+
+        // Auto-start
+        startCamera();
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<section class="logs-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>📊 System Logs</h2>
+      <div class="log-controls">
+        <button 
+          class="btn-tab" 
+          [class.active]="activeTab === 'website'"
+          (click)="switchTab('website')">
+          🌐 Website Logs
+        </button>
+        <button 
+          class="btn-tab" 
+          [class.active]="activeTab === 'jobs'"
+          (click)="switchTab('jobs')">
+          ⚙️ Job Logs
+        </button>
+        <button class="btn-refresh" (click)="refreshLogs()">
+          🔄 Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Loading logs...</p>
+    </div>
+
+    <!-- Logs Display -->
+    <div class="logs-container" *ngIf="!isLoading">
+      <div class="logs-header">
+        <h3>{{activeTab === 'website' ? '🌐 Website Service Logs' : '⚙️ Scheduled Job Logs'}}</h3>
+        <span class="log-count">{{filteredLogs.length}} of {{logs.length}} entries</span>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="filters-section">
+        <div class="filter-group">
+          <label>⏰ Filter by Time:</label>
+          <select [(ngModel)]="filterHours" (change)="onFilterChange()" class="time-select">
+            <option value="1">Last 1 Hour</option>
+            <option value="6">Last 6 Hours</option>
+            <option value="24">Last 24 Hours</option>
+            <option value="168">Last 7 Days</option>
+            <option value="720">Last 30 Days</option>
+            <option value="0">All Time</option>
+          </select>
+          
+          <div class="quick-filters">
+            <button class="btn-quick" [class.active]="filterHours === 24" (click)="setTimeFilter(24)">Last 1 Day</button>
+            <button class="btn-quick" [class.active]="filterHours === 168" (click)="setTimeFilter(168)">Last 7 Days</button>
+            <button class="btn-quick" [class.active]="filterHours === 720" (click)="setTimeFilter(720)">Last 30 Days</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>🏷️ Filter by Level:</label>
+          <select [(ngModel)]="filterLevel" (change)="onFilterChange()" class="level-select">
+            <option value="all">All Levels</option>
+            <option value="info">Info</option>
+            <option value="warn">Warning</option>
+            <option value="error">Error</option>
+          </select>
+        </div>
+
+        <button class="btn-clear" (click)="clearFilters()">🗑️ Clear Filters</button>
+      </div>
+
+      <div class="logs-list" *ngIf="filteredLogs.length > 0">
+        <div 
+          class="log-entry" 
+          *ngFor="let log of filteredLogs; trackBy: trackByIndex"
+          [ngClass]="getLogClass(log.level)"
+          (click)="openLogModal(log)">
+          
+          <div class="log-header">
+            <span class="log-time">{{formatTime(log.timestamp)}}</span>
+            <span class="log-level" [ngClass]="'level-' + log.level">{{log.level?.toUpperCase() || 'INFO'}}</span>
+          </div>
+          
+          <div class="log-message">{{log.message}}</div>
+          
+          <div class="log-preview" *ngIf="hasDetails(log)">
+            <small>Click to view details...</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-logs" *ngIf="filteredLogs.length === 0 && logs.length > 0">
+        <div class="empty-icon">🔍</div>
+        <h3>No logs match filters</h3>
+        <p>Try adjusting your date or level filters</p>
+      </div>
+
+      <div class="empty-logs" *ngIf="logs.length === 0">
+        <div class="empty-icon">📝</div>
+        <h3>No logs found</h3>
+        <p>{{activeTab === 'website' ? 'Website service' : 'Job scheduler'}} logs will appear here</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log Detail Modal -->
+  <div class="modal-overlay" *ngIf="selectedLog" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>📋 Log Details</h3>
+        <button class="btn-close" (click)="closeModal()">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="log-detail-row">
+          <strong>Timestamp:</strong>
+          <span>{{formatDateTime(selectedLog.timestamp)}}</span>
+        </div>
+        
+        <div class="log-detail-row">
+          <strong>Level:</strong>
+          <span class="log-level" [ngClass]="'level-' + selectedLog.level">
+            {{selectedLog.level?.toUpperCase() || 'INFO'}}
+          </span>
+        </div>
+        
+        <div class="log-detail-row">
+          <strong>Message:</strong>
+          <span>{{selectedLog.message}}</span>
+        </div>
+        
+        <div class="log-detail-row" *ngIf="selectedLog.error">
+          <strong>Error:</strong>
+          <pre class="error-details">{{selectedLog.error}}</pre>
+        </div>
+        
+        <div class="log-detail-row" *ngIf="selectedLog.stack">
+          <strong>Stack Trace:</strong>
+          <pre class="stack-trace">{{selectedLog.stack}}</pre>
+        </div>
+        
+        <div class="log-detail-row" *ngIf="hasExtraData(selectedLog)">
+          <strong>Additional Data:</strong>
+          <pre class="extra-data">{{formatExtraData(selectedLog)}}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,119 @@
+<div class="admin-dashboard">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>🛠️ Admin Panel</h2>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a 
+        class="nav-item" 
+        [class.active]="activeSection === 'overview'"
+        (click)="setActiveSection('overview')">
+        📊 Overview
+      </a>
+      
+      <a 
+        class="nav-item" 
+        [class.active]="activeSection === 'logs'"
+        (click)="setActiveSection('logs')">
+        📋 System Logs
+      </a>
+      
+      <a 
+        class="nav-item" 
+        [class.active]="activeSection === 'scanner'"
+        (click)="setActiveSection('scanner')">
+        📱 QR Scanner
+      </a>
+      
+      <a 
+        class="nav-item" 
+        [class.active]="activeSection === 'bookings'"
+        (click)="setActiveSection('bookings')">
+        🚗 Manage Bookings
+      </a>
+      
+      <a 
+        class="nav-item" 
+        [class.active]="activeSection === 'users'"
+        (click)="setActiveSection('users')">
+        👥 User Management
+      </a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <div class="content-header">
+      <h1>{{getSectionTitle()}}</h1>
+      <div class="user-info">
+        <span>Welcome, Admin</span>
+        <button class="btn-logout" (click)="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <!-- Overview Section -->
+      <div *ngIf="activeSection === 'overview'" class="section-content">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🚗</div>
+            <div class="stat-info">
+              <h3>Total Bookings</h3>
+              <p class="stat-number">{{stats.totalBookings}}</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+              <h3>Active Sessions</h3>
+              <p class="stat-number">{{stats.activeSessions}}</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+              <h3>Total Users</h3>
+              <p class="stat-number">{{stats.totalUsers}}</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <h3>Revenue Today</h3>
+              <p class="stat-number">₹{{stats.revenueToday}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logs Section -->
+      <div *ngIf="activeSection === 'logs'" class="section-content">
+        <app-logs-viewer></app-logs-viewer>
+      </div>
+
+      <!-- Scanner Section -->
+      <div *ngIf="activeSection === 'scanner'" class="section-content">
+        <app-qr-scanner></app-qr-scanner>
+      </div>
+
+      <!-- Bookings Section -->
+      <div *ngIf="activeSection === 'bookings'" class="section-content">
+        <div class="coming-soon">
+          <h3>🚧 Booking Management</h3>
+          <p>Advanced booking management features coming soon...</p>
+        </div>
+      </div>
+
+      <!-- Users Section -->
+      <div *ngIf="activeSection === 'users'" class="section-content">
+        <div class="coming-soon">
+          <h3>🚧 User Management</h3>
+          <p>User management features coming soon...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

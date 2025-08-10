@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test QR Code</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 2rem;
+            background: #f0f0f0;
+        }
+        .qr-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .qr-code {
+            width: 300px;
+            height: 300px;
+            border: 2px solid #ddd;
+        }
+        .instructions {
+            margin-top: 1rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="qr-container">
+        <h2>🎫 Test QR Code</h2>
+        <div id="qr-code" class="qr-code"></div>
+        <div class="instructions">
+            <p>Use this test QR code to verify scanner functionality</p>
+            <p>Token: <code>test-token-123</code></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        // Generate a test QR code
+        const testToken = 'test-token-123';
+        QRCode.toCanvas(document.getElementById('qr-code'), testToken, {
+            width: 300,
+            margin: 2,
+            color: {
+                dark: '#000000',
+                light: '#FFFFFF'
+            }
+        }, function (error) {
+            if (error) console.error(error);
+            console.log('Test QR code generated successfully!');
+        });
+    </script>
+</body>
+</html>

@@ -2,6 +2,7 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import Payment from '../Models/Payment-Model.js';
 import Booking from '../Models/Booking-Model.js';
+import TicketService from './TicketService.js';
 
 class PaymentService {
   constructor() {
@@ -87,7 +88,10 @@ class PaymentService {
     booking.paymentHoldExpiry = null;
     await booking.save();
 
-    return { payment, booking };
+    // Generate ticket after successful payment
+    const ticket = await TicketService.generateTicket(booking._id, booking.userId);
+
+    return { payment, booking, ticket };
   }
 
   async handlePaymentFailure(orderId, reason) {
