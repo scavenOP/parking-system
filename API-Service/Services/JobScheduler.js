@@ -1,4 +1,6 @@
 import cron from 'node-cron';
+import fs from 'fs';
+import path from 'path';
 import Booking from '../Models/Booking-Model.js';
 import Payment from '../Models/Payment-Model.js';
 import Ticket from '../Models/Ticket-Model.js';
@@ -17,7 +19,8 @@ class JobScheduler {
           expiredHolds: await this.processExpiredPaymentHolds(),
           cancelledBookings: await this.processCancelledBookings(),
           completedBookings: await this.processCompletedBookings(),
-          expiredTickets: await this.processExpiredTickets()
+          expiredTickets: await this.processExpiredTickets(),
+          cleanedLogs: await this.cleanupOldLogs()
         };
         
         // Log only if there were changes
@@ -49,11 +52,7 @@ class JobScheduler {
       booking.paymentStatus = 'expired';
       await booking.save();
       
-      // Cancel associated payment if exists
-      await Payment.updateMany(
-        { bookingId: booking._id },
-        { status: 'expired' }
-      );
+      // Keep payment records intact - no payment status changes
       
       cancelledCount++;
     }
@@ -99,28 +98,46 @@ class JobScheduler {
     return cancelledCount;
   }
 
-  // Complete in_progress bookings that have reached end time
+  // Process bookings that have reached end time
   async processCompletedBookings() {
     const now = new Date();
     
-    const completedBookings = await Booking.find({
-      status: 'in_progress',
+    // Find active or in_progress bookings past end time
+    const expiredBookings = await Booking.find({
+      status: { $in: ['active', 'in_progress'] },
+      paymentStatus: 'completed',
       endTime: { $lt: now }
     });
 
     let completedCount = 0;
+    let expiredCount = 0;
     
-    for (const booking of completedBookings) {
-      booking.status = 'completed';
-      await booking.save();
-      completedCount++;
+    for (const booking of expiredBookings) {
+      const ticket = await Ticket.findOne({ bookingId: booking._id });
+      
+      if (ticket && ticket.status === 'used') {
+        // User scanned ticket - mark as completed
+        booking.status = 'completed';
+        await booking.save();
+        completedCount++;
+      } else {
+        // User didn't scan ticket - mark as expired
+        booking.status = 'expired';
+        await booking.save();
+        
+        if (ticket) {
+          ticket.status = 'expired';
+          await ticket.save();
+        }
+        expiredCount++;
+      }
     }
 
-    if (completedCount > 0) {
-      jobLogger.info(`✅ Completed ${completedCount} bookings that reached end time`);
+    if (completedCount > 0 || expiredCount > 0) {
+      jobLogger.info(`✅ Completed ${completedCount} scanned bookings, expired ${expiredCount} unscanned bookings`);
     }
     
-    return completedCount;
+    return completedCount + expiredCount;
   }
 
   // Mark expired tickets as expired
@@ -147,6 +164,41 @@ class JobScheduler {
     return expiredCount;
   }
 
+  // Clean up log files older than 7 days
+  async cleanupOldLogs() {
+    const logsDir = path.join(process.cwd(), 'logs');
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    let cleanedCount = 0;
+    
+    try {
+      if (!fs.existsSync(logsDir)) {
+        return cleanedCount;
+      }
+      
+      const files = fs.readdirSync(logsDir);
+      
+      for (const file of files) {
+        const filePath = path.join(logsDir, file);
+        const stats = fs.statSync(filePath);
+        
+        if (stats.mtime < sevenDaysAgo) {
+          fs.unlinkSync(filePath);
+          cleanedCount++;
+        }
+      }
+      
+      if (cleanedCount > 0) {
+        jobLogger.info(`🗑️ Cleaned up ${cleanedCount} old log files`);
+      }
+    } catch (error) {
+      jobLogger.error('Error cleaning up logs:', error);
+    }
+    
+    return cleanedCount;
+  }
+
   // Manual cleanup method for admin use
   async runManualCleanup() {
     jobLogger.info('🧹 Running manual cleanup...');
@@ -155,7 +207,8 @@ class JobScheduler {
       expiredHolds: await this.processExpiredPaymentHolds(),
       cancelledBookings: await this.processCancelledBookings(),
       completedBookings: await this.processCompletedBookings(),
-      expiredTickets: await this.processExpiredTickets()
+      expiredTickets: await this.processExpiredTickets(),
+      cleanedLogs: await this.cleanupOldLogs()
     };
     
     jobLogger.info('✅ Manual cleanup completed', results);

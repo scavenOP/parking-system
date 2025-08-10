@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import PaymentModel from '../Models/Payment-Model.js';
 import BookingModel from '../Models/Booking-Model.js';
 import { authenticateToken } from '../Middleware/auth.js';
@@ -16,17 +17,19 @@ const razorpay = new Razorpay({
 router.get('/history', authenticateToken, async (req, res) => {
     try {
         console.log('Fetching payment history for user:', req.user?.userId);
-        const userId = req.user?.userId; // From auth middleware
+        console.log('User ID type:', typeof req.user?.userId);
+        const userId = new mongoose.Types.ObjectId(req.user?.userId);
+        console.log('Converted userId to ObjectId:', userId);
         const { period = '30' } = req.query;
         
         let dateFilter = {};
         if (period !== 'all') {
             const days = parseInt(period);
-            const endDate = new Date(); // Current date
+            const endDate = new Date();
+            endDate.setHours(23, 59, 59, 999); // End of today
             const startDate = new Date();
             startDate.setDate(startDate.getDate() - days);
-            startDate.setHours(0, 0, 0, 0); // Start of day
-            endDate.setHours(23, 59, 59, 999); // End of current day
+            startDate.setHours(0, 0, 0, 0); // Start of day N days ago
             dateFilter = { 
                 createdAt: { 
                     $gte: startDate,
@@ -36,10 +39,21 @@ router.get('/history', authenticateToken, async (req, res) => {
             console.log(`Payment history filter: ${startDate} to ${endDate}`);
         }
         
+        // Debug: Get all payments first
+        const allPayments = await PaymentModel.find({ userId }).sort({ createdAt: -1 });
+        console.log('All payments for user:', allPayments.map(p => ({ id: p._id, userId: p.userId, createdAt: p.createdAt, amount: p.amount })));
+        console.log('Total payments found:', allPayments.length);
+        
+        // Also try finding without userId filter to see all payments
+        const allPaymentsInDB = await PaymentModel.find({}).sort({ createdAt: -1 }).limit(5);
+        console.log('Recent payments in DB (any user):', allPaymentsInDB.map(p => ({ id: p._id, userId: p.userId, amount: p.amount })));
+        
         const payments = await PaymentModel.find({
             userId: userId,
             ...dateFilter
         }).populate('bookingId').sort({ createdAt: -1 });
+        
+        console.log('Filtered payments:', payments.map(p => ({ id: p._id, createdAt: p.createdAt, amount: p.amount })));
         
         const formattedPayments = payments.map(payment => ({
             _id: payment._id,

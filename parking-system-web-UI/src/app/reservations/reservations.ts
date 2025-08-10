@@ -220,19 +220,47 @@ export class ReservationsComponent implements OnInit {
 
   async loadTicket(bookingId: string) {
     try {
+      console.log('Loading ticket for booking:', bookingId);
       const response = await this.ticketService.getUserTickets().toPromise();
+      console.log('Ticket response:', response);
+      
       if (response.success) {
-        const ticket = response.data.find((t: any) => t.bookingId._id === bookingId);
+        const ticket = response.data.find((t: any) => t.bookingId._id === bookingId || t.bookingId === bookingId);
+        console.log('Found ticket:', ticket);
+        
         if (ticket) {
           this.ticketQRs[bookingId] = ticket.qrCodeData;
+          console.log('QR data set for booking:', bookingId);
+        } else {
+          console.log('No ticket found for booking:', bookingId);
+          // Generate ticket if it doesn't exist
+          await this.generateTicket(bookingId);
         }
       }
     } catch (error) {
       console.error('Error loading ticket:', error);
+      // Try to generate ticket if loading fails
+      await this.generateTicket(bookingId);
     }
   }
 
   getTicketQR(bookingId: string): string {
     return this.ticketQRs[bookingId] || '';
+  }
+
+  async generateTicket(bookingId: string) {
+    try {
+      console.log('Generating ticket for booking:', bookingId);
+      const response = await this.ticketService.generateTicket(bookingId).toPromise();
+      console.log('Generate ticket response:', response);
+      
+      if (response.success) {
+        this.ticketQRs[bookingId] = response.data.qrCodeData;
+        console.log('Generated QR data for booking:', bookingId);
+      }
+    } catch (error) {
+      console.error('Error generating ticket:', error);
+      alert('Failed to generate ticket. Please try again.');
+    }
   }
 }

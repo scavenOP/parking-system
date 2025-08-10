@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PaymentService } from '../services/payment.service';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-payment-history',
@@ -82,24 +83,57 @@ export class PaymentHistoryComponent implements OnInit {
   }
 
   downloadReceipt(payment: any) {
-    // Generate receipt download
-    const receiptData = {
-      paymentId: payment.razorpayPaymentId,
-      amount: payment.amount,
-      date: payment.createdAt,
-      bookingId: payment.bookingId
-    };
+    const doc = new jsPDF();
     
-    const dataStr = JSON.stringify(receiptData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
+    // Company Header
+    doc.setFontSize(20);
+    doc.setTextColor(71, 138, 201);
+    doc.text('Smart City Parking', 20, 25);
     
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `receipt-${payment.razorpayPaymentId}.json`;
-    link.click();
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Premium Parking Solutions', 20, 32);
+    doc.text('123 Business District, Smart City', 20, 37);
+    doc.text('Phone: +91 98765 43210 | Email: support@smartparking.com', 20, 42);
     
-    URL.revokeObjectURL(url);
+    // Receipt Title
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text('PAYMENT RECEIPT', 20, 60);
+    
+    // Receipt Details
+    doc.setFontSize(10);
+    const receiptDate = new Date(payment.createdAt).toLocaleString('en-IN');
+    
+    doc.text(`Receipt No: ${payment.razorpayPaymentId}`, 20, 75);
+    doc.text(`Date: ${receiptDate}`, 20, 82);
+    doc.text(`Booking ID: ${payment.bookingId}`, 20, 89);
+    
+    // Payment Details Box
+    doc.setDrawColor(71, 138, 201);
+    doc.rect(20, 100, 170, 40);
+    
+    doc.setFontSize(12);
+    doc.text('Payment Details', 25, 112);
+    doc.setFontSize(10);
+    doc.text(`Service: Parking Space Booking`, 25, 122);
+    doc.text(`Amount: ₹${payment.amount}`, 25, 129);
+    doc.text(`Status: ${payment.status.toUpperCase()}`, 25, 136);
+    
+    // Total Amount
+    doc.setFontSize(14);
+    doc.setTextColor(71, 138, 201);
+    doc.text(`Total Paid: ₹${payment.amount}`, 20, 155);
+    
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Thank you for choosing Smart City Parking!', 20, 180);
+    doc.text('For support, contact us at support@smartparking.com', 20, 185);
+    doc.text('This is a computer generated receipt.', 20, 190);
+    
+    // Download
+    doc.save(`receipt-${payment.razorpayPaymentId}.pdf`);
   }
 
   retryPayment(payment: any) {

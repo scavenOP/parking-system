@@ -46,13 +46,12 @@ const paymentSchema = new mongoose.Schema({
   },
   expiresAt: {
     type: Date,
-    required: true
+    required: false
   }
 }, {
   timestamps: true
 });
 
-// Auto-expire pending payments after 5 minutes
-paymentSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+// Removed TTL index - payments are preserved permanently
 
 export default mongoose.model('Payment', paymentSchema);

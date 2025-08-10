@@ -1,18 +1,14 @@
 import express from 'express';
 import TicketService from '../Services/TicketService.js';
+import { authenticateToken } from '../Middleware/auth.js';
 
 const router = express.Router();
 
 // Get user tickets
-router.get('/my-tickets', async (req, res) => {
+router.get('/my-tickets', authenticateToken, async (req, res) => {
   try {
-    const userId = req.query.userId;
-    if (!userId) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'User ID is required' 
-      });
-    }
+    const userId = req.user.userId;
+    console.log('Getting tickets for user:', userId);
 
     const tickets = await TicketService.getUserTickets(userId);
     res.json({ success: true, data: tickets });
@@ -23,15 +19,17 @@ router.get('/my-tickets', async (req, res) => {
 });
 
 // Generate ticket for booking
-router.post('/generate', async (req, res) => {
+router.post('/generate', authenticateToken, async (req, res) => {
   try {
     const { bookingId } = req.body;
-    const userId = req.body.userId || req.query.userId;
+    const userId = req.user.userId;
     
-    if (!userId || !bookingId) {
+    console.log('Generating ticket for booking:', bookingId, 'user:', userId);
+    
+    if (!bookingId) {
       return res.status(400).json({ 
         success: false, 
-        message: 'User ID and Booking ID are required' 
+        message: 'Booking ID is required' 
       });
     }
 

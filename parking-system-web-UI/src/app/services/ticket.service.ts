@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CookieService } from './cookie.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,36 +11,27 @@ export class TicketService {
 
   constructor(
     private http: HttpClient,
-    private cookieService: CookieService
+    private authService: AuthService
   ) {}
 
-  private getCurrentUserId(): string {
-    const userData = this.cookieService.get('user_data');
-    if (userData) {
-      const user = JSON.parse(userData);
-      return user.UserId;
-    }
-    return '';
+  private getAuthHeaders() {
+    const token = this.authService.getTokenFromCache();
+    return { 'Authorization': `Bearer ${token}` };
   }
 
   generateTicket(bookingId: string): Observable<any> {
-    const userId = this.getCurrentUserId();
-    return this.http.post(`${this.apiUrl}/generate`, {
-      bookingId,
-      userId
+    return this.http.post(`${this.apiUrl}/generate`, { bookingId }, {
+      headers: this.getAuthHeaders()
     });
   }
 
   validateTicket(qrToken: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/validate`, {
-      qrToken
-    });
+    return this.http.post(`${this.apiUrl}/validate`, { qrToken });
   }
 
   getUserTickets(): Observable<any> {
-    const userId = this.getCurrentUserId();
     return this.http.get(`${this.apiUrl}/my-tickets`, {
-      params: { userId }
+      headers: this.getAuthHeaders()
     });
   }
 }
