@@ -87,9 +87,13 @@ router.post('/spaces/initialize', async (req, res) => {
 router.post('/bookings', async (req, res) => {
   try {
     const userId = req.user?.id || req.body.userId;
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'User ID is required' });
+    }
     const booking = await ParkingService.createBooking(userId, req.body);
-    res.status(201).json({ success: true, data: booking });
+    res.status(201).json({ success: true, data: booking, message: 'Booking created successfully' });
   } catch (error) {
+    console.error('Booking creation error:', error.message);
     res.status(400).json({ success: false, message: error.message });
   }
 });
@@ -143,6 +147,7 @@ router.post('/bookings/calculate-amount', async (req, res) => {
     const amount = ParkingService.calculateBookingAmount(startTime, endTime);
     res.json({ success: true, data: { amount } });
   } catch (error) {
+    console.error('Amount calculation error:', error.message);
     res.status(400).json({ success: false, message: error.message });
   }
 });

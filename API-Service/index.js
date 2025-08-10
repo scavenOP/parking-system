@@ -27,6 +27,10 @@ app.use("/api/User", UserRouter);
 import ParkingRouter from './Routes/Parking-route.js';
 app.use("/api/parking", ParkingRouter);
 
+// Import and use payment routes
+import PaymentRouter from './Routes/Payment-route.js';
+app.use("/api/payment", PaymentRouter);
+
 // Serve static files from the Angular app
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, 'public', 'browser')));

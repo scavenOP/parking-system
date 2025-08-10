@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ParkingService, Car, ParkingSpace, Booking } from '../services/parking.service';
+import { PaymentService } from '../services/payment.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+
+declare var Razorpay: any;
 
 
 @Component({
@@ -34,14 +38,17 @@ export class ParkingSearchComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private parkingService: ParkingService
+    private parkingService: ParkingService,
+    private paymentService: PaymentService,
+    private router: Router
   ) {
     const now = new Date();
-    const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+    const startTime = new Date(now.getTime() + 30 * 60 * 1000); // Current time + 30 minutes
+    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour after start time
 
     this.searchForm = this.fb.group({
-      startTime: [this.formatDateTime(now), Validators.required],
-      endTime: [this.formatDateTime(oneHourLater), Validators.required],
+      startTime: [this.formatDateTime(startTime), Validators.required],
+      endTime: [this.formatDateTime(endTime), Validators.required],
       selectedCar: ['', Validators.required],
       selectedFloor: ['']
     }, { validators: this.dateTimeValidator });
@@ -63,7 +70,9 @@ export class ParkingSearchComponent implements OnInit {
   }
 
   formatDateTime(date: Date): string {
-    return date.toISOString().slice(0, 16);
+    // Adjust for local timezone to prevent date shifting
+    const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+    return localDate.toISOString().slice(0, 16);
   }
 
   loadAvailableCars() {
@@ -195,6 +204,8 @@ export class ParkingSearchComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error calculating amount:', error);
+        const errorMessage = error.error?.message || 'Error calculating amount';
+        console.warn('Amount calculation failed:', errorMessage);
         this.calculatedAmount = 0;
         this.isCalculatingAmount = false;
       }
@@ -220,33 +231,93 @@ export class ParkingSearchComponent implements OnInit {
     return null;
   }
 
-  bookSpace() {
+  async bookSpace() {
     if (!this.selectedSpace || this.searchForm.invalid) return;
 
     this.isBooking = true;
-    const booking: Booking = {
-      carId: this.searchForm.get('selectedCar')?.value,
-      spaceId: this.selectedSpace._id,
-      startTime: new Date(this.searchForm.get('startTime')?.value),
-      endTime: new Date(this.searchForm.get('endTime')?.value)
-      // Amount will be calculated on server side
+    
+    try {
+      // Create booking first
+      const booking: Booking = {
+        carId: this.searchForm.get('selectedCar')?.value,
+        spaceId: this.selectedSpace._id,
+        startTime: new Date(this.searchForm.get('startTime')?.value),
+        endTime: new Date(this.searchForm.get('endTime')?.value)
+      };
+
+      const bookingResponse = await this.parkingService.createBooking(booking).toPromise();
+      
+      if (bookingResponse.success) {
+        const bookingId = bookingResponse.data._id;
+        
+        // Create payment order and open Razorpay
+        const orderResponse = await this.paymentService.createPaymentOrder(bookingId).toPromise();
+        
+        if (orderResponse.success) {
+          this.initiateRazorpayPayment(orderResponse.data, bookingId);
+        }
+      }
+    } catch (error) {
+      console.error('Booking error:', error);
+      const errorMessage = (error as any).error?.message || 'Failed to create booking. Please try again.';
+      alert(errorMessage);
+      this.isBooking = false;
+    }
+  }
+
+  initiateRazorpayPayment(orderData: any, bookingId: string) {
+    const options = {
+      key: orderData.keyId,
+      amount: orderData.amount * 100,
+      currency: orderData.currency,
+      name: 'Smart City Parking',
+      description: `Parking Space ${this.selectedSpace?.spaceNumber}`,
+      order_id: orderData.orderId,
+      handler: (response: any) => {
+        this.verifyPayment(response, bookingId);
+      },
+      prefill: {
+        name: 'User Name',
+        email: 'user@example.com'
+      },
+      theme: {
+        color: '#667eea'
+      },
+      modal: {
+        ondismiss: () => {
+          this.handlePaymentFailure(orderData.orderId, 'Payment cancelled by user');
+        }
+      }
     };
 
-    this.parkingService.createBooking(booking).subscribe({
-      next: (response) => {
-        if (response.success) {
-          alert('Parking space booked successfully!');
-          this.selectedSpace = null;
-          this.calculatedAmount = 0;
-          this.searchSpaces(); // Refresh available spaces
-        }
-        this.isBooking = false;
-      },
-      error: (error) => {
-        console.error('Error booking space:', error);
-        alert('Failed to book parking space. Please try again.');
-        this.isBooking = false;
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+  async verifyPayment(response: any, bookingId: string) {
+    try {
+      const verifyResponse = await this.paymentService.verifyPayment(response).toPromise();
+      
+      if (verifyResponse.success) {
+        alert('Payment successful! Your parking space is confirmed.');
+        this.router.navigate(['/reservations']);
       }
-    });
+    } catch (error) {
+      console.error('Payment verification error:', error);
+      alert('Payment verification failed. Please contact support.');
+      this.router.navigate(['/reservations']);
+    }
+    this.isBooking = false;
+  }
+
+  async handlePaymentFailure(orderId: string, reason: string) {
+    try {
+      await this.paymentService.handlePaymentFailure(orderId, reason).toPromise();
+      alert('Payment failed. Your space is held for 5 minutes. You can retry from reservations.');
+    } catch (error) {
+      console.error('Payment failure handling error:', error);
+    }
+    this.router.navigate(['/reservations']);
+    this.isBooking = false;
   }
 }

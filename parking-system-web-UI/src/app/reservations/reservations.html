@@ -76,8 +76,20 @@
           </div>
         </div>
 
-        <div class="reservation-actions" *ngIf="booking.status === 'active'">
+        <div class="reservation-actions">
+          <!-- Payment retry for pending/failed payments (not cancelled) -->
           <button 
+            *ngIf="(booking.paymentStatus === 'pending' || booking.paymentStatus === 'failed') && booking.status !== 'cancelled'"
+            class="btn-pay" 
+            (click)="retryPayment(booking._id)"
+            [disabled]="isProcessingPayment">
+            <span *ngIf="!isProcessingPayment">💳 Complete Payment</span>
+            <span *ngIf="isProcessingPayment">Processing...</span>
+          </button>
+          
+          <!-- Cancel for active bookings -->
+          <button 
+            *ngIf="booking.status === 'active'"
             class="btn-cancel" 
             (click)="cancelBooking(booking._id)"
             [disabled]="isCancelling">

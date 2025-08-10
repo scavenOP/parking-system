@@ -84,8 +84,32 @@ class ParkingService {
     return await ParkingSpace.find(query).sort({ floor: 1, 'position.row': 1, 'position.column': 1 });
   }
 
+  // Validate booking times
+  validateBookingTimes(startTime, endTime) {
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const now = new Date();
+    
+    if (start < now) {
+      throw new Error('Start time cannot be in the past');
+    }
+    
+    if (end <= start) {
+      throw new Error('End time must be greater than start time');
+    }
+    
+    // Minimum booking duration check (optional)
+    const minDuration = 30 * 60 * 1000; // 30 minutes
+    if ((end.getTime() - start.getTime()) < minDuration) {
+      throw new Error('Minimum booking duration is 30 minutes');
+    }
+  }
+
   // Calculate booking amount (server-side for security)
   calculateBookingAmount(startTime, endTime) {
+    // Validate times first
+    this.validateBookingTimes(startTime, endTime);
+    
     const hours = Math.ceil((new Date(endTime) - new Date(startTime)) / (1000 * 60 * 60));
     const firstHourRate = parseInt(process.env.FIRST_HOUR_RATE) || 50;
     const additionalHourRate = parseInt(process.env.ADDITIONAL_HOUR_RATE) || 60;
@@ -101,10 +125,13 @@ class ParkingService {
   async createBooking(userId, bookingData) {
     const { carId, spaceId, startTime, endTime } = bookingData;
 
-    // Check if space is available
+    // Validate booking times first
+    this.validateBookingTimes(startTime, endTime);
+
+    // Check if space is available (exclude cancelled and expired bookings)
     const conflictingBooking = await Booking.findOne({
       spaceId,
-      status: 'active',
+      status: { $in: ['active', 'pending_payment'] },
       $or: [
         { startTime: { $lte: endTime }, endTime: { $gte: startTime } }
       ]
@@ -117,13 +144,18 @@ class ParkingService {
     // Calculate total amount on server side for security
     const totalAmount = this.calculateBookingAmount(startTime, endTime);
 
+    // Set payment hold expiry (5 minutes from now)
+    const holdExpiry = new Date(Date.now() + 5 * 60 * 1000);
+    
     const booking = new Booking({
       userId,
       carId,
       spaceId,
       startTime,
       endTime,
-      totalAmount
+      totalAmount,
+      status: 'pending_payment',
+      paymentHoldExpiry: holdExpiry
     });
 
     return await booking.save();

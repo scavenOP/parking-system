@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ParkingService } from '../services/parking.service';
+import { PaymentService } from '../services/payment.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+
+declare var Razorpay: any;
 
 interface BookingWithDetails {
   _id: string;
@@ -19,6 +22,8 @@ interface BookingWithDetails {
   endTime: Date;
   totalAmount: number;
   status: string;
+  paymentStatus: string;
+  paymentHoldExpiry: Date;
   createdAt: Date;
 }
 
@@ -42,8 +47,12 @@ export class ReservationsComponent implements OnInit {
   selectedFilter = 'all';
   isLoading = false;
   isCancelling = false;
+  isProcessingPayment = false;
 
-  constructor(private parkingService: ParkingService) {}
+  constructor(
+    private parkingService: ParkingService,
+    private paymentService: PaymentService
+  ) {}
 
   ngOnInit() {
     this.loadBookings();
@@ -119,5 +128,77 @@ export class ReservationsComponent implements OnInit {
     const start = new Date(startTime);
     const end = new Date(endTime);
     return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60));
+  }
+
+  async retryPayment(bookingId: string) {
+    this.isProcessingPayment = true;
+    
+    try {
+      // Create payment order for existing booking
+      const orderResponse = await this.paymentService.createPaymentOrder(bookingId).toPromise();
+      
+      if (orderResponse.success) {
+        this.initiateRazorpayPayment(orderResponse.data, bookingId);
+      }
+    } catch (error) {
+      console.error('Payment retry error:', error);
+      alert('Failed to initiate payment. Please try again.');
+      this.isProcessingPayment = false;
+    }
+  }
+
+  initiateRazorpayPayment(orderData: any, bookingId: string) {
+    const options = {
+      key: orderData.keyId,
+      amount: orderData.amount * 100,
+      currency: orderData.currency,
+      name: 'Smart City Parking',
+      description: 'Parking Space Booking Payment',
+      order_id: orderData.orderId,
+      handler: (response: any) => {
+        this.verifyPayment(response, bookingId);
+      },
+      prefill: {
+        name: 'User Name',
+        email: 'user@example.com'
+      },
+      theme: {
+        color: '#667eea'
+      },
+      modal: {
+        ondismiss: () => {
+          this.handlePaymentFailure(orderData.orderId, 'Payment cancelled by user');
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+  async verifyPayment(response: any, bookingId: string) {
+    try {
+      const verifyResponse = await this.paymentService.verifyPayment(response).toPromise();
+      
+      if (verifyResponse.success) {
+        alert('Payment successful! Your parking space is confirmed.');
+        this.loadBookings(); // Refresh bookings
+      }
+    } catch (error) {
+      console.error('Payment verification error:', error);
+      alert('Payment verification failed. Please contact support.');
+    }
+    this.isProcessingPayment = false;
+  }
+
+  async handlePaymentFailure(orderId: string, reason: string) {
+    try {
+      await this.paymentService.handlePaymentFailure(orderId, reason).toPromise();
+      alert('Payment failed. You can retry payment within 5 minutes.');
+      this.loadBookings(); // Refresh bookings to show updated status
+    } catch (error) {
+      console.error('Payment failure handling error:', error);
+    }
+    this.isProcessingPayment = false;
   }
 }

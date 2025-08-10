@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard';
 import { CarsComponent } from './cars/cars';
 import { ParkingSearchComponent } from './parking-search/parking-search';
 import { ReservationsComponent } from './reservations/reservations';
+import { BookingSummaryComponent } from './booking-summary/booking-summary';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'cars', component: CarsComponent, canActivate: [AuthGuard] },
   { path: 'parking-search', component: ParkingSearchComponent, canActivate: [AuthGuard] },
-  { path: 'reservations', component: ReservationsComponent, canActivate: [AuthGuard] }
+  { path: 'reservations', component: ReservationsComponent, canActivate: [AuthGuard] },
+  { path: 'booking-summary', component: BookingSummaryComponent, canActivate: [AuthGuard] }
 ];

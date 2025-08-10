@@ -16,7 +16,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.1",
     "mongoose-sequence": "^6.0.1",
-    "parking-system": "file:"
+    "parking-system": "file:",
+    "razorpay": "^2.9.6"
   },
   "devDependencies": {
     "@types/express": "^5.0.1"

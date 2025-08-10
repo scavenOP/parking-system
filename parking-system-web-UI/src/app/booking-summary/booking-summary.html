@@ -1,0 +1,64 @@
+<section class="booking-summary-page">
+  <div class="container">
+    <div class="summary-card" [@slideUp]>
+      <div class="header">
+        <h2>🎫 Booking Summary</h2>
+        <p>Please review your booking details before payment</p>
+      </div>
+
+      <div class="booking-details">
+        <div class="detail-section">
+          <h3>🅿️ Parking Details</h3>
+          <div class="detail-row">
+            <span class="label">Space:</span>
+            <span class="value">{{bookingData.spaceNumber}} (Floor {{bookingData.floor}})</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Start Time:</span>
+            <span class="value">{{formatDateTime(bookingData.startTime)}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">End Time:</span>
+            <span class="value">{{formatDateTime(bookingData.endTime)}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Duration:</span>
+            <span class="value">{{bookingData.duration}} hours</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>🚗 Vehicle Details</h3>
+          <div class="detail-row">
+            <span class="label">Vehicle:</span>
+            <span class="value">{{bookingData.carDetails}}</span>
+          </div>
+        </div>
+
+        <div class="detail-section payment-section">
+          <h3>💰 Payment Details</h3>
+          <div class="detail-row">
+            <span class="label">Amount:</span>
+            <span class="value amount">₹{{bookingData.totalAmount}}</span>
+          </div>
+          <div class="pricing-info">
+            <small>₹50 for first hour, ₹60 per additional hour</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-secondary" (click)="goBack()" [disabled]="isProcessing">
+          ← Back to Selection
+        </button>
+        <button 
+          class="btn-primary" 
+          (click)="proceedToPayment()" 
+          [disabled]="isProcessing">
+          <span *ngIf="!isProcessing">💳 Proceed to Payment</span>
+          <span *ngIf="isProcessing">Processing...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
