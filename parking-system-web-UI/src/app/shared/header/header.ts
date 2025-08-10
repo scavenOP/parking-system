@@ -29,6 +29,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     
     if (isPlatformBrowser(this.platformId)) {
       this.initHeaderAnimations();
+      this.initClickOutside();
     }
   }
 
@@ -59,6 +60,17 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private initClickOutside() {
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', (event) => {
+        const dropdown = document.querySelector('.user-dropdown');
+        if (dropdown && !dropdown.contains(event.target as Node)) {
+          this.isDropdownOpen = false;
+        }
+      });
+    }
+  }
+
   isUser(): boolean {
     return this.currentUser?.Role === 'User';
   }
@@ -68,7 +80,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   toggleDropdown(): void {
+    console.log('Dropdown toggle clicked, current state:', this.isDropdownOpen);
     this.isDropdownOpen = !this.isDropdownOpen;
+    console.log('New dropdown state:', this.isDropdownOpen);
   }
 
   closeDropdown(): void {

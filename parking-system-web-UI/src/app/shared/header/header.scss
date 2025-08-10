@@ -5,7 +5,7 @@
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 9999;
+  z-index: 99998;
   transition: all 0.5s ease;
   box-shadow: 0 4px 20px rgba(71,138,201,0.3);
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -70,7 +70,7 @@
     align-items: center;
     gap: 2rem;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 
     .desktop-nav {
       display: flex;
@@ -129,6 +129,7 @@
 
     .user-dropdown {
       position: relative;
+      z-index: 1001;
 
       .user-dropdown-toggle {
         color: white;
@@ -159,16 +160,19 @@
       }
 
       .dropdown-menu {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        min-width: 220px;
-        z-index: 1000;
-        margin-top: 0.5rem;
-        overflow: hidden;
+        position: absolute !important;
+        top: 100% !important;
+        right: 0 !important;
+        background: white !important;
+        border-radius: 10px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+        min-width: 220px !important;
+        z-index: 99999 !important;
+        margin-top: 0.5rem !important;
+        overflow: visible !important;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
 
         .dropdown-item {
           display: block;

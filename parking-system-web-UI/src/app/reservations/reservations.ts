@@ -151,9 +151,13 @@ export class ReservationsComponent implements OnInit {
   }
 
   initiateRazorpayPayment(orderData: any, bookingId: string) {
+    console.log('=== RESERVATIONS RAZORPAY INIT ===');
+    console.log('Order data:', orderData);
+    console.log('Key field:', orderData.key);
+    
     const options = {
-      key: orderData.keyId,
-      amount: orderData.amount * 100,
+      key: orderData.key,
+      amount: orderData.amount,
       currency: orderData.currency,
       name: 'Smart City Parking',
       description: 'Parking Space Booking Payment',
@@ -174,6 +178,15 @@ export class ReservationsComponent implements OnInit {
         }
       }
     };
+
+    console.log('Razorpay options:', options);
+    
+    if (!options.key) {
+      console.error('Razorpay key missing in reservations!');
+      alert('Payment configuration error. Please try again.');
+      this.isProcessingPayment = false;
+      return;
+    }
 
     const rzp = new Razorpay(options);
     rzp.open();

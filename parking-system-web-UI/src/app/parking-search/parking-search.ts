@@ -266,14 +266,19 @@ export class ParkingSearchComponent implements OnInit {
   }
 
   initiateRazorpayPayment(orderData: any, bookingId: string) {
+    console.log('=== PARKING SEARCH RAZORPAY INIT ===');
+    console.log('Order data:', orderData);
+    console.log('Key field:', orderData.key);
+    
     const options = {
-      key: orderData.keyId,
-      amount: orderData.amount * 100,
+      key: orderData.key,
+      amount: orderData.amount,
       currency: orderData.currency,
       name: 'Smart City Parking',
       description: `Parking Space ${this.selectedSpace?.spaceNumber}`,
       order_id: orderData.orderId,
       handler: (response: any) => {
+        console.log('Razorpay success response:', response);
         this.verifyPayment(response, bookingId);
       },
       prefill: {
@@ -290,13 +295,27 @@ export class ParkingSearchComponent implements OnInit {
       }
     };
 
+    console.log('Razorpay options:', options);
+    
+    if (!options.key) {
+      console.error('Razorpay key missing in parking-search!');
+      alert('Payment configuration error. Please try again.');
+      this.isBooking = false;
+      return;
+    }
+
     const rzp = new Razorpay(options);
     rzp.open();
   }
 
   async verifyPayment(response: any, bookingId: string) {
     try {
+      console.log('=== PARKING SEARCH PAYMENT VERIFICATION ===');
+      console.log('Razorpay response:', response);
+      console.log('Booking ID:', bookingId);
+      
       const verifyResponse = await this.paymentService.verifyPayment(response).toPromise();
+      console.log('Verify response:', verifyResponse);
       
       if (verifyResponse.success) {
         alert('Payment successful! Your parking space is confirmed.');

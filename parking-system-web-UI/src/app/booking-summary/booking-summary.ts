@@ -60,10 +60,21 @@ export class BookingSummaryComponent implements OnInit {
   }
 
   async proceedToPayment() {
+    console.log('=== PAYMENT FLOW STARTED ===');
+    console.log('Booking data:', this.bookingData);
+    console.log('Razorpay available:', typeof Razorpay !== 'undefined');
+    
     this.isProcessing = true;
     
     try {
       // First create the booking with pending payment status
+      console.log('Creating booking with data:', {
+        carId: this.bookingData.carId,
+        spaceId: this.bookingData.spaceId,
+        startTime: this.bookingData.startTime,
+        endTime: this.bookingData.endTime
+      });
+      
       const bookingResponse = await this.parkingService.createBooking({
         carId: this.bookingData.carId,
         spaceId: this.bookingData.spaceId,
@@ -71,18 +82,29 @@ export class BookingSummaryComponent implements OnInit {
         endTime: this.bookingData.endTime
       }).toPromise();
 
+      console.log('Booking response:', bookingResponse);
+
       if (bookingResponse.success) {
         const bookingId = bookingResponse.data._id;
+        console.log('Booking created with ID:', bookingId);
         
         // Create payment order
         const orderResponse = await this.paymentService.createPaymentOrder(bookingId).toPromise();
+        console.log('Payment order response:', orderResponse);
         
         if (orderResponse.success) {
           this.initiateRazorpayPayment(orderResponse.data, bookingId);
+        } else {
+          console.error('Failed to create payment order:', orderResponse);
+          alert('Failed to create payment order. Please try again.');
         }
       }
     } catch (error) {
-      console.error('Payment initiation error:', error);
+      console.error('=== PAYMENT FLOW ERROR ===');
+      console.error('Full error object:', error);
+      console.error('Error message:', (error as any).message);
+      console.error('Error response:', (error as any).error);
+      
       const errorMessage = (error as any).error?.message || 'Failed to initiate payment. Please try again.';
       alert(errorMessage);
       this.isProcessing = false;
@@ -90,14 +112,21 @@ export class BookingSummaryComponent implements OnInit {
   }
 
   initiateRazorpayPayment(orderData: any, bookingId: string) {
+    console.log('=== RAZORPAY INITIALIZATION ===');
+    console.log('Full order data:', JSON.stringify(orderData, null, 2));
+    console.log('Razorpay key:', orderData.key);
+    console.log('Razorpay script loaded:', typeof Razorpay !== 'undefined');
+    console.log('Window Razorpay:', (window as any).Razorpay);
+    
     const options = {
-      key: orderData.keyId,
-      amount: orderData.amount * 100,
+      key: orderData.key,
+      amount: orderData.amount,
       currency: orderData.currency,
       name: 'Smart City Parking',
       description: 'Parking Space Booking',
       order_id: orderData.orderId,
       handler: (response: any) => {
+        console.log('Razorpay success response:', response);
         this.verifyPayment(response, bookingId);
       },
       prefill: {
@@ -114,13 +143,27 @@ export class BookingSummaryComponent implements OnInit {
       }
     };
 
+    console.log('Razorpay options:', options);
+    
+    if (!options.key) {
+      console.error('Razorpay key is missing!');
+      alert('Payment configuration error. Please try again.');
+      this.isProcessing = false;
+      return;
+    }
+
     const rzp = new Razorpay(options);
     rzp.open();
   }
 
   async verifyPayment(response: any, bookingId: string) {
     try {
+      console.log('=== PAYMENT VERIFICATION ===');
+      console.log('Razorpay response:', response);
+      console.log('Booking ID:', bookingId);
+      
       const verifyResponse = await this.paymentService.verifyPayment(response).toPromise();
+      console.log('Verify response:', verifyResponse);
       
       if (verifyResponse.success) {
         alert('Payment successful! Your parking space is confirmed.');
