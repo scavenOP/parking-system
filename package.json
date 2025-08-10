@@ -8,6 +8,6 @@
     "build": "cd parking-system-web-UI && npm run build"
   },
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   }
 }
