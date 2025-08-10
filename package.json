@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Smart City Parking System",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "build": "cd parking-system-web-UI && npm run build"
