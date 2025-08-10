@@ -10,6 +10,8 @@ import { BookingSummaryComponent } from './booking-summary/booking-summary';
 import { QrScannerComponent } from './qr-scanner/qr-scanner';
 import { LogsViewerComponent } from './logs-viewer/logs-viewer';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard';
+import { PaymentHistoryComponent } from './payment-history/payment-history';
+import { SettingsComponent } from './settings/settings';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { UserGuard } from './guards/user.guard';
@@ -26,5 +28,7 @@ export const routes: Routes = [
   { path: 'booking-summary', component: BookingSummaryComponent, canActivate: [AuthGuard] },
   { path: 'qr-scanner', component: QrScannerComponent },
   { path: 'logs', component: LogsViewerComponent },
-  { path: 'admin', component: AdminDashboardComponent, canActivate: [AdminGuard] }
+  { path: 'admin', component: AdminDashboardComponent, canActivate: [AdminGuard] },
+  { path: 'payment-history', component: PaymentHistoryComponent, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] }
 ];

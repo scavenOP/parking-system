@@ -20,7 +20,7 @@
     <div class="features-section">
       <h3>Available Features</h3>
       <div class="features-grid">
-        <div class="feature-card">
+        <div class="feature-card" (click)="navigateToSearch()">
           <div class="feature-icon">🅿️</div>
           <h4>Find Parking</h4>
           <p>Search for available parking spots near you</p>
@@ -30,12 +30,12 @@
           <h4>Reservations</h4>
           <p>View and manage your parking reservations</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" (click)="navigateToPaymentHistory()">
           <div class="feature-icon">💳</div>
           <h4>Payment History</h4>
           <p>Track your parking payments and receipts</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" (click)="navigateToSettings()">
           <div class="feature-icon">⚙️</div>
           <h4>Settings</h4>
           <p>Manage your account preferences</p>

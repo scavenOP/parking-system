@@ -124,7 +124,6 @@ export class QrScannerComponent implements OnInit, OnDestroy {
   async validateTicket(qrToken: string) {
     // Start loading
     this.isValidating = true;
-    this.scanResult = null;
     
     console.log('Validating QR token:', qrToken);
     
@@ -136,18 +135,13 @@ export class QrScannerComponent implements OnInit, OnDestroy {
       this.isValidating = false;
       
       if (response && response.success) {
-        this.scanResult = {
-          valid: response.valid,
-          message: response.message,
-          data: response.data
-        };
-        this.resultClass = response.valid ? 'success' : 'error';
+        if (response.valid) {
+          alert('✅ SUCCESS: ' + response.message);
+        } else {
+          alert('❌ ERROR: ' + response.message);
+        }
       } else {
-        this.scanResult = {
-          valid: false,
-          message: response?.message || 'Validation failed'
-        };
-        this.resultClass = 'error';
+        alert('❌ ERROR: ' + (response?.message || 'Validation failed'));
       }
     } catch (error) {
       console.error('Validation error:', error);
@@ -155,11 +149,7 @@ export class QrScannerComponent implements OnInit, OnDestroy {
       // Stop loading
       this.isValidating = false;
       
-      this.scanResult = {
-        valid: false,
-        message: 'Network error. Please try again.'
-      };
-      this.resultClass = 'error';
+      alert('❌ ERROR: Network error. Please try again.');
     }
   }
 

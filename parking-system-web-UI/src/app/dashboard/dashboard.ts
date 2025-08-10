@@ -24,4 +24,16 @@ export class DashboardComponent implements OnInit {
   navigateToReservations() {
     this.router.navigate(['/reservations']);
   }
+
+  navigateToSearch() {
+    this.router.navigate(['/parking-search']);
+  }
+
+  navigateToPaymentHistory() {
+    this.router.navigate(['/payment-history']);
+  }
+
+  navigateToSettings() {
+    this.router.navigate(['/settings']);
+  }
 }

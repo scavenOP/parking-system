@@ -1,0 +1,89 @@
+<section class="payment-history">
+  <div class="container">
+    <div class="header">
+      <h2>💳 Payment History</h2>
+      <p>Track all your parking payments and transactions</p>
+    </div>
+
+    <div class="filters">
+      <select [(ngModel)]="filterPeriod" (change)="loadPayments()" class="filter-select">
+        <option value="all">All Time</option>
+        <option value="30">Last 30 Days</option>
+        <option value="7">Last 7 Days</option>
+        <option value="1">Today</option>
+      </select>
+      
+      <select [(ngModel)]="filterStatus" (change)="applyFilters()" class="filter-select">
+        <option value="all">All Status</option>
+        <option value="completed">Completed</option>
+        <option value="failed">Failed</option>
+        <option value="pending">Pending</option>
+      </select>
+    </div>
+
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <h3>Total Spent</h3>
+          <p>₹{{totalSpent}}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <h3>Total Payments</h3>
+          <p>{{totalPayments}}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <h3>Success Rate</h3>
+          <p>{{successRate}}%</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="payments-list" *ngIf="filteredPayments.length > 0">
+      <div class="payment-item" *ngFor="let payment of filteredPayments" [ngClass]="payment.status">
+        <div class="payment-info">
+          <div class="payment-header">
+            <h4>{{payment.bookingId}}</h4>
+            <span class="status-badge" [ngClass]="payment.status">{{payment.status | titlecase}}</span>
+          </div>
+          
+          <div class="payment-details">
+            <p><strong>Amount:</strong> ₹{{payment.amount}}</p>
+            <p><strong>Date:</strong> {{formatDate(payment.createdAt)}}</p>
+            <p><strong>Payment ID:</strong> {{payment.razorpayPaymentId || 'N/A'}}</p>
+            <p *ngIf="payment.space"><strong>Space:</strong> {{payment.space}}</p>
+          </div>
+        </div>
+        
+        <div class="payment-actions">
+          <button class="btn-receipt" *ngIf="payment.status === 'completed'" (click)="downloadReceipt(payment)">
+            📄 Receipt
+          </button>
+          <button class="btn-retry" *ngIf="payment.status === 'failed'" (click)="retryPayment(payment)">
+            🔄 Retry
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredPayments.length === 0 && !isLoading">
+      <div class="empty-icon">💳</div>
+      <h3>No payments found</h3>
+      <p>You haven't made any payments yet</p>
+      <button class="btn-search" (click)="navigateToSearch()">Find Parking</button>
+    </div>
+
+    <div class="loading" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Loading payment history...</p>
+    </div>
+  </div>
+</section>

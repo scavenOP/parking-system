@@ -6,28 +6,65 @@
       
       <!-- Show when user is NOT logged in -->
       <ng-container *ngIf="!currentUser">
-        <a routerLink="/login" class="nav-link" routerLinkActive="active">Sign In</a>
-        <a routerLink="/signup" class="nav-link signup-btn" routerLinkActive="active">Sign Up</a>
+        <div class="auth-links desktop-only">
+          <a routerLink="/login" class="nav-link" routerLinkActive="active">Sign In</a>
+          <a routerLink="/signup" class="nav-link signup-btn" routerLinkActive="active">Sign Up</a>
+        </div>
+        
+        <!-- Mobile auth links -->
+        <div class="mobile-auth" *ngIf="!currentUser">
+          <a routerLink="/login" class="nav-link" routerLinkActive="active">Sign In</a>
+          <a routerLink="/signup" class="nav-link signup-btn" routerLinkActive="active">Sign Up</a>
+        </div>
       </ng-container>
+      
+      <!-- Mobile menu toggle -->
+      <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" *ngIf="currentUser">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
       
       <!-- Show when user IS logged in -->
       <ng-container *ngIf="currentUser">
-        <!-- User role only -->
-        <ng-container *ngIf="isUser()">
-          <a routerLink="/parking-search" class="nav-link" routerLinkActive="active">Find Parking</a>
-          <a routerLink="/cars" class="nav-link" routerLinkActive="active">My Cars</a>
-        </ng-container>
-        
-        <!-- Both roles -->
-        <a routerLink="/dashboard" class="nav-link" routerLinkActive="active">Dashboard</a>
-        
-        <!-- Admin role only -->
-        <ng-container *ngIf="isAdmin()">
-          <a routerLink="/admin" class="nav-link" routerLinkActive="active">Admin Panel</a>
-        </ng-container>
-        
-        <span class="user-welcome">Welcome, {{currentUser.Name}}!</span>
-        <button class="nav-link logout-btn" (click)="logout()">Logout</button>
+        <!-- Desktop Navigation -->
+        <div class="desktop-nav" [class.mobile-open]="isMobileMenuOpen">
+          <!-- User role only -->
+          <ng-container *ngIf="isUser()">
+            <a routerLink="/parking-search" class="nav-link" routerLinkActive="active" (click)="closeMobileMenu()">Find Parking</a>
+          </ng-container>
+          
+          <!-- User Dropdown -->
+          <div class="user-dropdown" [class.open]="isDropdownOpen">
+            <button class="user-dropdown-toggle" (click)="toggleDropdown()">
+              Welcome, {{currentUser.Name}}! 
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            
+            <div class="dropdown-menu" *ngIf="isDropdownOpen">
+              <!-- User role options -->
+              <ng-container *ngIf="isUser()">
+                <a routerLink="/parking-search" class="dropdown-item" (click)="closeDropdown(); closeMobileMenu()">🚗 Find Parking</a>
+                <a routerLink="/cars" class="dropdown-item" (click)="closeDropdown(); closeMobileMenu()">🚙 My Cars</a>
+              </ng-container>
+              
+              <!-- Common options -->
+              <a routerLink="/dashboard" class="dropdown-item" (click)="closeDropdown(); closeMobileMenu()">📊 Dashboard</a>
+              <a routerLink="/reservations" class="dropdown-item" (click)="closeDropdown(); closeMobileMenu()">📅 Reservations</a>
+              <a routerLink="/payment-history" class="dropdown-item" (click)="closeDropdown(); closeMobileMenu()">💳 Payment History</a>
+              <a routerLink="/settings" class="dropdown-item" (click)="closeDropdown(); closeMobileMenu()">⚙️ Settings</a>
+              
+              <!-- Admin options -->
+              <ng-container *ngIf="isAdmin()">
+                <div class="dropdown-divider"></div>
+                <a routerLink="/admin" class="dropdown-item" (click)="closeDropdown(); closeMobileMenu()">🛠️ Admin Panel</a>
+              </ng-container>
+              
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item logout-item" (click)="logout()">🚪 Logout</button>
+            </div>
+          </div>
+        </div>
       </ng-container>
     </nav>
   </div>

@@ -11,8 +11,7 @@
         <div class="camera-view">
           <video #videoElement autoplay playsinline muted class="video-stream"></video>
           <div class="scanner-overlay">
-            <div class="scan-frame"></div>
-            <p class="scan-instruction">Position QR code within the frame</p>
+            <p class="scan-instruction">Point QR code to camera</p>
             <div class="camera-status">
               <p *ngIf="!errorMessage">📷 Camera Active</p>
               <p *ngIf="errorMessage" class="error">❌ {{errorMessage}}</p>
@@ -46,51 +45,7 @@
     </div>
   </div>
 
-<!-- Popup Modal for Results -->
-<div class="modal-overlay" *ngIf="scanResult" (click)="closePopup()" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;">
-  <div class="modal-content" [ngClass]="resultClass" (click)="$event.stopPropagation()" style="background: white; border-radius: 15px; max-width: 500px; width: 90%; position: relative; z-index: 10000;">
-    <div class="modal-header">
-      <div class="result-icon">
-        <span *ngIf="scanResult.valid">✅</span>
-        <span *ngIf="!scanResult.valid">❌</span>
-      </div>
-      <button class="btn-close" (click)="closePopup()">✕</button>
-    </div>
-    
-    <div class="modal-body">
-      <h3>{{scanResult.message}}</h3>
-      
-      <div class="ticket-details" *ngIf="scanResult.valid && scanResult.data">
-        <div class="detail-row">
-          <span class="label">Ticket:</span>
-          <span class="value">{{scanResult.data.ticketNumber}}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">Space:</span>
-          <span class="value">{{scanResult.data.space}}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">Vehicle:</span>
-          <span class="value">{{scanResult.data.vehicle}}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">User:</span>
-          <span class="value">{{scanResult.data.userName}}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">Valid Until:</span>
-          <span class="value">{{formatDateTime(scanResult.data.endTime)}}</span>
-        </div>
-      </div>
-    </div>
 
-    <div class="modal-footer">
-      <button class="btn-continue" (click)="closePopup()">
-        Continue Scanning
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- Loading Modal -->
 <div class="modal-overlay" *ngIf="isValidating" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;">

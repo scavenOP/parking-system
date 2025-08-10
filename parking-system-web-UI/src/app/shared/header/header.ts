@@ -12,6 +12,8 @@ import { AuthService, UserViewModel } from '../../services/auth.service';
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
   currentUser: UserViewModel | null = null;
+  isDropdownOpen = false;
+  isMobileMenuOpen = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -65,7 +67,25 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     return this.currentUser?.Role === 'Admin';
   }
 
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  closeDropdown(): void {
+    this.isDropdownOpen = false;
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
+  }
+
   logout(): void {
+    this.closeDropdown();
+    this.closeMobileMenu();
     this.authService.logout();
     this.router.navigate(['/']);
   }

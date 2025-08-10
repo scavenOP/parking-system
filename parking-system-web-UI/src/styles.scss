@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles and responsive utilities */
+@use './app/shared/responsive.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background: #f8f9fa;
+}

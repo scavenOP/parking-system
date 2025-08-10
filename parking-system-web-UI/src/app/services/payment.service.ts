@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CookieService } from './cookie.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,48 +11,46 @@ export class PaymentService {
 
   constructor(
     private http: HttpClient,
-    private cookieService: CookieService
+    private authService: AuthService
   ) {}
 
-  private getCurrentUserId(): string {
-    const userData = this.cookieService.get('user_data');
-    if (userData) {
-      const user = JSON.parse(userData);
-      return user.UserId;
-    }
-    return '';
+  private getAuthHeaders() {
+    const token = this.authService.getTokenFromCache();
+    return { 'Authorization': `Bearer ${token}` };
   }
 
-  createPaymentOrder(bookingId: string): Observable<any> {
-    const userId = this.getCurrentUserId();
-    return this.http.post(`${this.apiUrl}/create-order`, {
-      bookingId,
-      userId
+  getPaymentHistory(period: string = '30'): Observable<any> {
+    console.log('PaymentService: Loading payment history for period:', period);
+    return this.http.get(`${this.apiUrl}/history?period=${period}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  createOrder(orderData: any): Observable<any> {
+    console.log('PaymentService: Creating payment order', orderData);
+    return this.http.post(`${this.apiUrl}/create-order`, orderData, {
+      headers: this.getAuthHeaders()
     });
   }
 
   verifyPayment(paymentData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/verify`, paymentData);
+    console.log('PaymentService: Verifying payment', paymentData);
+    return this.http.post(`${this.apiUrl}/verify`, paymentData, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  createPaymentOrder(bookingId: string): Observable<any> {
+    console.log('PaymentService: Creating payment order for booking:', bookingId);
+    return this.http.post(`${this.apiUrl}/create-order`, { bookingId }, {
+      headers: this.getAuthHeaders()
+    });
   }
 
   handlePaymentFailure(orderId: string, reason: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/failure`, {
-      orderId,
-      reason
-    });
-  }
-
-  getPaymentHistory(): Observable<any> {
-    const userId = this.getCurrentUserId();
-    return this.http.get(`${this.apiUrl}/history`, {
-      params: { userId }
-    });
-  }
-
-  getPaymentDetails(paymentId: string): Observable<any> {
-    const userId = this.getCurrentUserId();
-    return this.http.get(`${this.apiUrl}/${paymentId}`, {
-      params: { userId }
+    console.log('PaymentService: Handling payment failure', { orderId, reason });
+    return this.http.post(`${this.apiUrl}/failure`, { orderId, reason }, {
+      headers: this.getAuthHeaders()
     });
   }
 }

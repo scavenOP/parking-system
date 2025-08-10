@@ -1,0 +1,73 @@
+// Global responsive utilities
+@media (max-width: 1024px) {
+  .container {
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 768px) {
+  // Global mobile styles
+  body {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  // Button responsive
+  .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  // Form responsive
+  .form-input {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+
+  // Card responsive
+  .card {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+
+  // Grid responsive
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  // Text responsive
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.8rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.3rem; }
+  h5 { font-size: 1.1rem; }
+}
+
+@media (max-width: 480px) {
+  // Small mobile styles
+  body {
+    font-size: 13px;
+  }
+
+  .container {
+    padding: 0 0.5rem;
+  }
+
+  .btn {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .form-input {
+    padding: 0.7rem;
+  }
+
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.6rem; }
+  h3 { font-size: 1.4rem; }
+  h4 { font-size: 1.2rem; }
+}
