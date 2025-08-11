@@ -38,10 +38,8 @@ jobs:
     
     - name: Create deployment package
       run: |
-        mkdir deploy
-        cp -r API-Service/* deploy/
-        cp package.json deploy/
-        ls -la deploy/
+        cp -r API-Service deploy/
+        ls -la deploy/API-Service
     
     - name: Azure Login
       uses: azure/login@v1
