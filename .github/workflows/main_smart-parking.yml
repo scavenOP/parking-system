@@ -17,14 +17,11 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
-        cache-dependency-path: |
-          parking-system-web-UI/package-lock.json
-          API-Service/package-lock.json
     
     - name: Install Angular dependencies
       run: |
         cd parking-system-web-UI
-        npm ci
+        npm install
     
     - name: Build Angular app
       run: |
@@ -34,20 +31,10 @@ jobs:
     - name: Install API dependencies
       run: |
         cd API-Service
-        npm ci
+        npm install
     
-    - name: Create deployment package
-      run: |
-        cp -r API-Service deploy/
-        ls -la deploy/API-Service
-    
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-    - name: Deploy to Azure App Service
+    - name: Deploy to Azure App services
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ secrets.AZURE_APP_NAME }}
-        package: ./deploy
+        app-name: smart-parking
+        publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
