@@ -41,6 +41,11 @@ jobs:
         mkdir deploy
         cp -r API-Service/* deploy/
         cp package.json deploy/ 2>/dev/null || echo "No root package.json"
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v2
