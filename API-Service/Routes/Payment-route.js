@@ -1,16 +1,19 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 import PaymentModel from '../Models/Payment-Model.js';
 import BookingModel from '../Models/Booking-Model.js';
 import { authenticateToken } from '../Middleware/auth.js';
 import Razorpay from 'razorpay';
 
+dotenv.config();
+
 const router = express.Router();
 
 // Initialize Razorpay with environment variables
 const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
+    key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_default',
+    key_secret: process.env.RAZORPAY_KEY_SECRET || 'default_secret'
 });
 
 // Get payment history
