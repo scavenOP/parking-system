@@ -1,0 +1,72 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="dashboard-content">
+  <div class="welcome-section">
+    <h2>Welcome, {{userName}}!</h2>
+    <p>Manage your parking needs</p>
+  </div>
+
+  <div class="quick-actions">
+    <ion-card class="action-card" (click)="goToParking()">
+      <ion-card-content>
+        <ion-icon name="car" color="primary"></ion-icon>
+        <h3>Find Parking</h3>
+        <p>Search available spaces</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="action-card" (click)="goToReservations()">
+      <ion-card-content>
+        <ion-icon name="calendar" color="success"></ion-icon>
+        <h3>My Bookings</h3>
+        <p>View reservations</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="action-card" (click)="goToCars()">
+      <ion-card-content>
+        <ion-icon name="car-sport" color="warning"></ion-icon>
+        <h3>My Cars</h3>
+        <p>Manage vehicles</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="action-card" (click)="goToQRScanner()">
+      <ion-card-content>
+        <ion-icon name="qr-code-outline" color="danger"></ion-icon>
+        <h3>QR Scanner</h3>
+        <p>Entry scanner</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div class="stats-section" *ngIf="stats">
+    <h3>Quick Stats</h3>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <ion-icon name="car" color="primary"></ion-icon>
+        <span class="stat-number">{{stats.totalCars}}</span>
+        <span class="stat-label">Cars</span>
+      </div>
+      <div class="stat-item">
+        <ion-icon name="calendar" color="success"></ion-icon>
+        <span class="stat-number">{{stats.activeBookings}}</span>
+        <span class="stat-label">Active</span>
+      </div>
+      <div class="stat-item">
+        <ion-icon name="checkmark-circle" color="warning"></ion-icon>
+        <span class="stat-number">{{stats.completedBookings}}</span>
+        <span class="stat-label">Completed</span>
+      </div>
+    </div>
+  </div>
+</ion-content>

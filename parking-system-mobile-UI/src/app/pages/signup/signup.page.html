@@ -1,0 +1,181 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="transparent">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" color="primary"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="signup-content" [fullscreen]="true">
+  <div class="signup-container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="logo-container">
+        <div class="logo-circle">
+          <ion-icon name="person-add-outline"></ion-icon>
+        </div>
+      </div>
+      <h1>Create Account</h1>
+      <p>Join thousands who park smart every day</p>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="form-container">
+      <form (ngSubmit)="onSignup()" #signupForm="ngForm">
+        <div class="input-group">
+          <div class="input-container">
+            <ion-icon name="person-outline" class="input-icon"></ion-icon>
+            <ion-input
+              type="text"
+              [(ngModel)]="signupData.name"
+              name="name"
+              required
+              placeholder="Full Name"
+              class="custom-input">
+            </ion-input>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-container">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <ion-input
+              type="email"
+              [(ngModel)]="signupData.email"
+              name="email"
+              required
+              placeholder="Email Address"
+              class="custom-input">
+            </ion-input>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-container">
+            <ion-icon name="call-outline" class="input-icon"></ion-icon>
+            <ion-input
+              type="tel"
+              [(ngModel)]="signupData.phone"
+              name="phone"
+              required
+              placeholder="Phone Number"
+              class="custom-input">
+            </ion-input>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-container">
+            <ion-icon name="location-outline" class="input-icon"></ion-icon>
+            <ion-input
+              type="text"
+              [(ngModel)]="signupData.address"
+              name="address"
+              required
+              placeholder="Address"
+              class="custom-input">
+            </ion-input>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-container" (click)="openDatePicker()">
+            <ion-icon name="calendar-outline" class="input-icon"></ion-icon>
+            <ion-input
+              readonly
+              [(ngModel)]="dateOfBirthDisplay"
+              name="dateOfBirth"
+              placeholder="Date of Birth"
+              class="custom-input">
+            </ion-input>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-container">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="signupData.password"
+              name="password"
+              required
+              placeholder="Password"
+              class="custom-input">
+            </ion-input>
+            <ion-button
+              fill="clear"
+              class="password-toggle"
+              (click)="togglePassword()"
+              type="button">
+              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-container">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              [(ngModel)]="confirmPassword"
+              name="confirmPassword"
+              required
+              placeholder="Confirm Password"
+              class="custom-input">
+            </ion-input>
+            <ion-button
+              fill="clear"
+              class="password-toggle"
+              (click)="toggleConfirmPassword()"
+              type="button">
+              <ion-icon [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="terms-section">
+          <ion-checkbox [(ngModel)]="acceptTerms" name="acceptTerms"></ion-checkbox>
+          <ion-label class="terms-label">
+            I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a>
+          </ion-label>
+        </div>
+
+        <ion-button
+          expand="block"
+          type="submit"
+          [disabled]="!signupForm.form.valid || !acceptTerms || isLoading || !passwordsMatch()"
+          class="signup-button">
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          <span *ngIf="!isLoading">Create Account</span>
+        </ion-button>
+      </form>
+    </div>
+
+    <!-- Social Signup -->
+    <div class="social-section">
+      <div class="divider">
+        <span>or sign up with</span>
+      </div>
+      
+      <div class="social-buttons">
+        <ion-button fill="outline" class="social-button">
+          <ion-icon name="logo-google" slot="start"></ion-icon>
+          Google
+        </ion-button>
+        <ion-button fill="outline" class="social-button">
+          <ion-icon name="logo-apple" slot="start"></ion-icon>
+          Apple
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Login Link -->
+    <div class="login-section">
+      <p>Already have an account?</p>
+      <ion-button fill="clear" (click)="goToLogin()" class="login-link">
+        Sign In
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

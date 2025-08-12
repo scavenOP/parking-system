@@ -1,0 +1,250 @@
+.signup-content {
+  --padding-start: 0;
+  --padding-end: 0;
+  --background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.signup-container {
+  padding: 1rem 1.5rem 2rem 1.5rem;
+  max-width: 400px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+/* Header Section */
+.header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+}
+
+.logo-container {
+  margin-bottom: 1.5rem;
+}
+
+.logo-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--ion-color-secondary), var(--ion-color-tertiary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.logo-circle ion-icon {
+  font-size: 2rem;
+  color: white;
+}
+
+.header-section h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: var(--ion-color-dark);
+}
+
+.header-section p {
+  color: var(--ion-color-medium);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Form Container */
+.form-container {
+  margin-bottom: 1.5rem;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-container {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  border: 2px solid #f1f5f9;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.input-container:focus-within {
+  border-color: var(--ion-color-primary);
+  box-shadow: 0 4px 20px rgba(71, 138, 201, 0.15);
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ion-color-medium);
+  font-size: 1.1rem;
+  z-index: 2;
+}
+
+.custom-input {
+  --padding-start: 48px;
+  --padding-end: 16px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --color: #1a1a1a !important;
+  --placeholder-color: #666666 !important;
+  font-size: 0.95rem;
+  font-weight: 500;
+  background: transparent !important;
+}
+
+.custom-datetime {
+  --padding-start: 48px;
+  --padding-end: 16px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --color: #1a1a1a !important;
+  --placeholder-color: #666666 !important;
+  font-size: 0.95rem;
+  font-weight: 500;
+  background: transparent !important;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  --color: var(--ion-color-medium);
+  z-index: 2;
+}
+
+/* Terms Section */
+.terms-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  padding: 0 0.5rem;
+}
+
+.terms-label {
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+  line-height: 1.4;
+}
+
+.terms-link {
+  color: var(--ion-color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.terms-link:hover {
+  text-decoration: underline;
+}
+
+.signup-button {
+  --background: linear-gradient(135deg, var(--ion-color-secondary), var(--ion-color-tertiary));
+  --color: white;
+  --border-radius: 16px;
+  --box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  font-weight: 600;
+  height: 52px;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.signup-button:disabled {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-medium);
+  --box-shadow: none;
+}
+
+/* Social Section */
+.social-section {
+  margin-bottom: 1.5rem;
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.divider span {
+  background: white;
+  padding: 0 1rem;
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-button {
+  flex: 1;
+  --border-color: #e2e8f0;
+  --color: var(--ion-color-dark);
+  --border-radius: 16px;
+  height: 44px;
+  font-weight: 500;
+}
+
+/* Login Section */
+.login-section {
+  text-align: center;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.login-section p {
+  color: var(--ion-color-medium);
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.login-link {
+  --color: var(--ion-color-primary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-height: 800px) {
+  .signup-container {
+    padding-top: 0.5rem;
+  }
+  
+  .header-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .logo-circle {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .logo-circle ion-icon {
+    font-size: 1.8rem;
+  }
+  
+  .header-section h1 {
+    font-size: 1.8rem;
+  }
+  
+  .input-group {
+    margin-bottom: 0.8rem;
+  }
+}

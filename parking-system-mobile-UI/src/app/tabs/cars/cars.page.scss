@@ -1,0 +1,126 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  
+  ion-spinner {
+    margin-bottom: 1rem;
+  }
+}
+
+.add-car-form {
+  margin-bottom: 1rem;
+  
+  .form-buttons {
+    margin-top: 1rem;
+    
+    ion-button {
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+.cars-header {
+  margin-bottom: 1rem;
+  
+  h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--ion-color-primary);
+  }
+  
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 0.9rem;
+  }
+}
+
+.car-card {
+  margin-bottom: 1rem;
+  
+  .car-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    .car-icon {
+      flex-shrink: 0;
+      color: var(--ion-color-primary);
+    }
+    
+    .car-details {
+      flex: 1;
+      
+      h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+      
+      p {
+        margin: 0.25rem 0;
+        font-size: 0.9rem;
+        color: var(--ion-color-medium);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        &.license-plate {
+          font-weight: 600;
+          color: var(--ion-color-dark);
+        }
+      }
+    }
+    
+    .car-actions {
+      flex-shrink: 0;
+    }
+  }
+  
+  .car-status {
+    margin-top: 0.5rem;
+    
+    ion-chip {
+      --background: var(--ion-color-success-tint);
+      --color: var(--ion-color-success-shade);
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  
+  ion-icon {
+    color: var(--ion-color-medium);
+    margin-bottom: 1rem;
+  }
+  
+  h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--ion-color-dark);
+  }
+  
+  p {
+    margin: 0 0 2rem 0;
+    color: var(--ion-color-medium);
+  }
+  
+  .add-first-car-btn {
+    max-width: 250px;
+    margin: 0 auto;
+  }
+}
+
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 0.5rem;
+}
+
+ion-fab-button {
+  --background: var(--ion-color-primary);
+  --color: white;
+}

@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Admin Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Stats Overview -->
+  <div class="stats-section">
+    <h2>📊 Overview</h2>
+    
+    <div class="stats-grid">
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-icon">🚗</div>
+          <h3>{{stats.totalBookings}}</h3>
+          <p>Total Bookings</p>
+        </ion-card-content>
+      </ion-card>
+      
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-icon">✅</div>
+          <h3>{{stats.activeSessions}}</h3>
+          <p>Active Sessions</p>
+        </ion-card-content>
+      </ion-card>
+      
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-icon">👥</div>
+          <h3>{{stats.totalUsers}}</h3>
+          <p>Total Users</p>
+        </ion-card-content>
+      </ion-card>
+      
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-icon">💰</div>
+          <h3>₹{{stats.revenueToday}}</h3>
+          <p>Revenue Today</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="actions-section">
+    <h2>🛠️ Quick Actions</h2>
+    
+    <ion-card class="action-card" (click)="goToQRScanner()">
+      <ion-card-content>
+        <div class="action-content">
+          <div class="action-icon">📱</div>
+          <div class="action-info">
+            <h3>QR Scanner</h3>
+            <p>Scan tickets for entry validation</p>
+          </div>
+          <ion-icon name="chevron-forward"></ion-icon>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="action-card">
+      <ion-card-content>
+        <div class="action-content">
+          <div class="action-icon">📋</div>
+          <div class="action-info">
+            <h3>System Logs</h3>
+            <p>View system activity and logs</p>
+          </div>
+          <ion-icon name="chevron-forward"></ion-icon>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="action-card">
+      <ion-card-content>
+        <div class="action-content">
+          <div class="action-icon">🚗</div>
+          <div class="action-info">
+            <h3>Manage Bookings</h3>
+            <p>View and manage all bookings</p>
+          </div>
+          <ion-icon name="chevron-forward"></ion-icon>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="action-card">
+      <ion-card-content>
+        <div class="action-content">
+          <div class="action-icon">👥</div>
+          <div class="action-info">
+            <h3>User Management</h3>
+            <p>Manage user accounts and roles</p>
+          </div>
+          <ion-icon name="chevron-forward"></ion-icon>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

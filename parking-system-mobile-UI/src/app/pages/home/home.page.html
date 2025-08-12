@@ -1,0 +1,108 @@
+<ion-content class="home-content" [fullscreen]="true">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-gradient"></div>
+    <div class="hero-content">
+      <div class="logo-container">
+        <div class="logo-circle">
+          <ion-icon name="car-sport-outline" class="logo-icon"></ion-icon>
+        </div>
+      </div>
+      <h1 class="hero-title">Smart Parking</h1>
+      <p class="hero-subtitle">Find, book & pay for parking in seconds</p>
+      
+      <div class="stats-container">
+        <div class="stat-item">
+          <span class="stat-number">150+</span>
+          <span class="stat-label">Spaces</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Available</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">QR</span>
+          <span class="stat-label">Tickets</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions-section">
+    <div *ngIf="isLoggedIn">
+      <ion-button 
+        expand="block" 
+        size="large" 
+        (click)="goToDashboard()"
+        class="dashboard-cta">
+        <ion-icon name="apps-outline" slot="start"></ion-icon>
+        Go to Dashboard
+      </ion-button>
+    </div>
+    
+    <div *ngIf="!isLoggedIn" class="auth-buttons">
+      <ion-button 
+        expand="block" 
+        size="large" 
+        (click)="goToLogin()"
+        class="primary-cta">
+        <ion-icon name="log-in-outline" slot="start"></ion-icon>
+        Sign In
+      </ion-button>
+      
+      <ion-button 
+        expand="block" 
+        size="large" 
+        fill="outline"
+        (click)="goToSignup()"
+        class="secondary-cta">
+        <ion-icon name="person-add-outline" slot="start"></ion-icon>
+        Create Account
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-section">
+    <h2 class="section-title">Why Choose Us?</h2>
+    
+    <div class="features-grid">
+      <div class="feature-card" (click)="goToLogin()">
+        <div class="feature-icon-container primary">
+          <ion-icon name="location-outline"></ion-icon>
+        </div>
+        <h3>Real-time Availability</h3>
+        <p>See available spaces instantly with live updates</p>
+      </div>
+      
+      <div class="feature-card" (click)="goToLogin()">
+        <div class="feature-icon-container secondary">
+          <ion-icon name="card-outline"></ion-icon>
+        </div>
+        <h3>Secure Payments</h3>
+        <p>Pay safely with multiple payment options</p>
+      </div>
+      
+      <div class="feature-card" (click)="goToLogin()">
+        <div class="feature-icon-container tertiary">
+          <ion-icon name="qr-code-outline"></ion-icon>
+        </div>
+        <h3>Digital Tickets</h3>
+        <p>Get QR tickets for contactless entry</p>
+      </div>
+      
+      <div class="feature-card" (click)="goToLogin()">
+        <div class="feature-icon-container success">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <h3>Quick Booking</h3>
+        <p>Book your spot in under 30 seconds</p>
+      </div>
+    </div>
+  </div>
+
+
+</ion-content>

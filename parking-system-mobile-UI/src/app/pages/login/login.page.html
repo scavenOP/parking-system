@@ -1,0 +1,103 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="transparent">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" color="primary"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="login-content" [fullscreen]="true">
+  <div class="login-container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="logo-container">
+        <div class="logo-circle">
+          <ion-icon name="car-sport-outline"></ion-icon>
+        </div>
+      </div>
+      <h1>Welcome Back</h1>
+      <p>Sign in to continue parking smart</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="form-container">
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <div class="input-group">
+          <div class="input-container">
+            <ion-icon name="person-outline" class="input-icon"></ion-icon>
+            <ion-input
+              type="text"
+              [(ngModel)]="loginData.username"
+              name="username"
+              required
+              placeholder="Username"
+              class="custom-input">
+            </ion-input>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-container">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="loginData.password"
+              name="password"
+              required
+              placeholder="Password"
+              class="custom-input">
+            </ion-input>
+            <ion-button
+              fill="clear"
+              class="password-toggle"
+              (click)="togglePassword()"
+              type="button">
+              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+
+        <div class="forgot-password">
+          <ion-button fill="clear" size="small">
+            Forgot Password?
+          </ion-button>
+        </div>
+
+        <ion-button
+          expand="block"
+          type="submit"
+          [disabled]="!loginForm.form.valid || isLoading"
+          class="login-button">
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          <span *ngIf="!isLoading">Sign In</span>
+        </ion-button>
+      </form>
+    </div>
+
+    <!-- Social Login -->
+    <div class="social-section">
+      <div class="divider">
+        <span>or continue with</span>
+      </div>
+      
+      <div class="social-buttons">
+        <ion-button fill="outline" class="social-button">
+          <ion-icon name="logo-google" slot="start"></ion-icon>
+          Google
+        </ion-button>
+        <ion-button fill="outline" class="social-button">
+          <ion-icon name="logo-apple" slot="start"></ion-icon>
+          Apple
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Sign Up Link -->
+    <div class="signup-section">
+      <p>Don't have an account?</p>
+      <ion-button fill="clear" (click)="goToSignup()" class="signup-link">
+        Create Account
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,143 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="transparent">
+    <ion-title class="page-title">QR Scanner</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab3" color="primary"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="toggleFlash()">
+        <ion-icon [name]="flashOn ? 'flash' : 'flash-off'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="scanner-content" [fullscreen]="true">
+
+  <div class="scanner-container" *ngIf="!scanResult && hasPermission">
+    <div class="camera-view">
+      <video #video class="camera-video" autoplay playsinline muted></video>
+      
+      <div class="scan-frame">
+        <div class="corner top-left"></div>
+        <div class="corner top-right"></div>
+        <div class="corner bottom-left"></div>
+        <div class="corner bottom-right"></div>
+        <div class="scan-line" [class.scanning]="isScanning"></div>
+      </div>
+    </div>
+    
+    <div class="scanner-controls">
+      <ion-button fill="clear" (click)="uploadFromGallery()" class="control-button">
+        <ion-icon name="image" slot="icon-only"></ion-icon>
+      </ion-button>
+      
+      <ion-button 
+        (click)="isScanning ? stopScanning() : startScanning()"
+        [color]="isScanning ? 'danger' : 'light'"
+        class="scan-button">
+        <ion-icon [name]="isScanning ? 'stop' : 'scan'" slot="icon-only"></ion-icon>
+      </ion-button>
+      
+      <ion-button fill="clear" (click)="switchCamera()" *ngIf="availableDevices.length > 1" class="control-button">
+        <ion-icon name="camera-reverse" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Simple Scanner -->
+  <div class="simple-scanner" *ngIf="!scanResult && !hasPermission">
+    <div class="simple-frame">
+      <ion-icon name="qr-code-outline"></ion-icon>
+      <h3>QR Scanner</h3>
+      <p>Camera access required</p>
+      <ion-button (click)="requestCameraPermission()" expand="block">Enable Camera</ion-button>
+      <ion-button (click)="uploadFromGallery()" fill="outline" expand="block">Upload Image</ion-button>
+    </div>
+  </div>
+
+  <!-- Scan Result -->
+  <div class="result-container" *ngIf="scanResult">
+    <div class="result-header">
+      <div class="result-icon" [class]="scanResult.valid ? 'success' : 'error'">
+        <ion-icon [name]="scanResult.valid ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+      </div>
+      
+      <h2 [class]="scanResult.valid ? 'success-text' : 'error-text'">
+        {{scanResult.valid ? 'Access Granted' : 'Access Denied'}}
+      </h2>
+      
+      <p class="result-message">{{scanResult.message}}</p>
+    </div>
+    
+    <!-- Valid Ticket Details -->
+    <div class="ticket-details" *ngIf="scanResult.valid && scanResult.ticket">
+      <div class="detail-card">
+        <div class="detail-header">
+          <ion-icon name="ticket-outline"></ion-icon>
+          <span>Ticket Details</span>
+        </div>
+        
+        <div class="detail-content">
+          <div class="detail-row">
+            <span class="label">Ticket Number:</span>
+            <span class="value">{{scanResult.ticket.ticketNumber}}</span>
+          </div>
+          
+          <div class="detail-row" *ngIf="scanResult.booking">
+            <span class="label">Parking Space:</span>
+            <span class="value">{{scanResult.booking.spaceNumber}}</span>
+          </div>
+          
+          <div class="detail-row" *ngIf="scanResult.user">
+            <span class="label">Guest Name:</span>
+            <span class="value">{{scanResult.user.name}}</span>
+          </div>
+          
+          <div class="detail-row">
+            <span class="label">Status:</span>
+            <span class="value status" [class]="scanResult.ticket.status">
+              {{scanResult.ticket.status | titlecase}}
+            </span>
+          </div>
+          
+          <div class="detail-row">
+            <span class="label">Valid Until:</span>
+            <span class="value">{{formatDateTime(scanResult.ticket.expiryTime)}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="result-actions">
+      <ion-button 
+        expand="block" 
+        (click)="resetScanner()"
+        class="scan-again-button">
+        <ion-icon name="scan-outline" slot="start"></ion-icon>
+        Scan Another Ticket
+      </ion-button>
+      
+      <ion-button 
+        fill="outline" 
+        expand="block"
+        (click)="goBack()"
+        class="back-button">
+        <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+        Back to Bookings
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions" *ngIf="!scanResult">
+    <ion-button 
+      fill="clear" 
+      (click)="showHelp()"
+      class="help-button">
+      <ion-icon name="help-circle-outline" slot="start"></ion-icon>
+      Need Help?
+    </ion-button>
+  </div>
+</ion-content>

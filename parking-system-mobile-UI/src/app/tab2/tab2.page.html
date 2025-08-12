@@ -1,0 +1,182 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="transparent">
+    <ion-title class="page-title">Find Parking</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="showFilters = !showFilters">
+        <ion-icon name="options-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="parking-content" [fullscreen]="true">
+  <!-- Search Header -->
+  <div class="search-header">
+    <div class="search-container">
+      <ion-searchbar
+        [(ngModel)]="searchQuery"
+        placeholder="Search parking locations..."
+        class="custom-searchbar"
+        (ionInput)="onSearchChange($event)">
+      </ion-searchbar>
+    </div>
+    
+    <!-- Quick Filters -->
+    <div class="quick-filters" *ngIf="showFilters">
+      <ion-chip 
+        [class.active]="selectedFilter === 'available'"
+        (click)="setFilter('available')">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        <ion-label>Available</ion-label>
+      </ion-chip>
+      
+      <ion-chip 
+        [class.active]="selectedFilter === 'nearby'"
+        (click)="setFilter('nearby')">
+        <ion-icon name="location-outline"></ion-icon>
+        <ion-label>Nearby</ion-label>
+      </ion-chip>
+      
+      <ion-chip 
+        [class.active]="selectedFilter === 'cheapest'"
+        (click)="setFilter('cheapest')">
+        <ion-icon name="cash-outline"></ion-icon>
+        <ion-label>Cheapest</ion-label>
+      </ion-chip>
+    </div>
+  </div>
+
+  <!-- Date Time Selection -->
+  <div class="datetime-section">
+    <h3>When do you need parking?</h3>
+    
+    <div class="datetime-cards">
+      <div class="datetime-card" (click)="openStartDatePicker()">
+        <div class="datetime-header">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>Start Date & Time</span>
+        </div>
+        <div class="datetime-display">
+          <span>{{formatDateTime(searchCriteria.startDateTime)}}</span>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+      
+      <div class="datetime-card" (click)="openEndDatePicker()">
+        <div class="datetime-header">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>End Date & Time</span>
+        </div>
+        <div class="datetime-display">
+          <span>{{formatDateTime(searchCriteria.endDateTime)}}</span>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Available Spaces -->
+  <div class="spaces-section">
+    <div class="section-header">
+      <h3>Available Spaces</h3>
+      <div class="availability-indicator">
+        <div class="indicator-dot available"></div>
+        <span>{{availableSpaces.length}} spaces available</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="isLoading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Finding available spaces...</p>
+    </div>
+
+    <!-- Spaces Grid -->
+    <div class="spaces-grid" *ngIf="!isLoading && availableSpaces.length > 0">
+      <div 
+        class="space-card" 
+        *ngFor="let space of availableSpaces"
+        (click)="selectSpace(space)"
+        [class.selected]="selectedSpace?.spaceNumber === space.spaceNumber">
+        
+        <div class="space-header">
+          <div class="space-number">
+            <ion-icon name="car-outline"></ion-icon>
+            <span>{{space.spaceNumber}}</span>
+          </div>
+          <div class="space-status available">
+            <ion-icon name="checkmark-circle"></ion-icon>
+          </div>
+        </div>
+        
+        <div class="space-details">
+          <div class="space-info">
+            <div class="info-item">
+              <ion-icon name="location-outline"></ion-icon>
+              <span>Floor {{space.floor}}</span>
+            </div>
+            <div class="info-item">
+              <ion-icon name="resize-outline"></ion-icon>
+              <span>{{space.type || 'Standard'}}</span>
+            </div>
+          </div>
+          
+          <div class="space-price">
+            <span class="price">₹{{calculatePrice(space)}}</span>
+            <span class="duration">/hour</span>
+          </div>
+        </div>
+        
+        <div class="space-features">
+          <ion-chip class="feature-chip" *ngIf="space.isHandicapAccessible">
+            <ion-icon name="accessibility-outline"></ion-icon>
+            <ion-label>Accessible</ion-label>
+          </ion-chip>
+          <ion-chip class="feature-chip" *ngIf="space.hasEVCharging">
+            <ion-icon name="flash-outline"></ion-icon>
+            <ion-label>EV Charging</ion-label>
+          </ion-chip>
+          <ion-chip class="feature-chip" *ngIf="space.isCovered">
+            <ion-icon name="umbrella-outline"></ion-icon>
+            <ion-label>Covered</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && availableSpaces.length === 0">
+      <div class="empty-icon">
+        <ion-icon name="car-outline"></ion-icon>
+      </div>
+      <h4>No spaces available</h4>
+      <p>Try adjusting your search criteria or time range</p>
+      <ion-button fill="outline" (click)="searchSpaces()">
+        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+        Refresh Search
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Book Button -->
+  <div class="book-section" *ngIf="selectedSpace">
+    <div class="booking-summary">
+      <div class="summary-details">
+        <h4>Space {{selectedSpace.spaceNumber}}</h4>
+        <p>Floor {{selectedSpace.floor}} • {{getDuration()}} hours</p>
+      </div>
+      <div class="summary-price">
+        <span class="total-price">₹{{getTotalPrice()}}</span>
+      </div>
+    </div>
+    
+    <ion-button 
+      expand="block" 
+      (click)="proceedToBooking()"
+      class="book-button"
+      [disabled]="isBooking">
+      <ion-spinner *ngIf="isBooking" name="crescent"></ion-spinner>
+      <span *ngIf="!isBooking">Book Now</span>
+    </ion-button>
+  </div>
+</ion-content>

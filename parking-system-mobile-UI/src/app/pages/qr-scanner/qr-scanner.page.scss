@@ -1,0 +1,370 @@
+.scanner-content {
+  --padding-start: 0;
+  --padding-end: 0;
+  --background: #000000;
+}
+
+.page-title {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: white;
+}
+
+/* Scanner Container */
+.scanner-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.camera-view {
+  flex: 1;
+  position: relative;
+  background: #000;
+  overflow: hidden;
+}
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+
+.scan-frame {
+  width: 250px;
+  height: 250px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.corner {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--ion-color-primary);
+}
+
+.corner.top-left {
+  top: -3px;
+  left: -3px;
+  border-right: none;
+  border-bottom: none;
+  border-top-left-radius: 20px;
+}
+
+.corner.top-right {
+  top: -3px;
+  right: -3px;
+  border-left: none;
+  border-bottom: none;
+  border-top-right-radius: 20px;
+}
+
+.corner.bottom-left {
+  bottom: -3px;
+  left: -3px;
+  border-right: none;
+  border-top: none;
+  border-bottom-left-radius: 20px;
+}
+
+.corner.bottom-right {
+  bottom: -3px;
+  right: -3px;
+  border-left: none;
+  border-top: none;
+  border-bottom-right-radius: 20px;
+}
+
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ion-color-primary), transparent);
+  opacity: 0;
+}
+
+.scan-line.scanning {
+  animation: scanAnimation 2s ease-in-out infinite;
+}
+
+@keyframes scanAnimation {
+  0% {
+    top: 0;
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: calc(100% - 2px);
+    opacity: 0;
+  }
+}
+
+.camera-icon {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.camera-icon ion-icon {
+  font-size: 4rem;
+}
+
+.scanner-controls {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  z-index: 10;
+}
+
+.scan-button {
+  width: 70px;
+  height: 70px;
+  --border-radius: 50%;
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.control-button {
+  width: 50px;
+  height: 50px;
+  --border-radius: 50%;
+  --color: white;
+  --background: rgba(0, 0, 0, 0.5);
+}
+
+.simple-scanner {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: white;
+}
+
+.simple-frame {
+  text-align: center;
+  max-width: 300px;
+}
+
+.simple-frame ion-icon {
+  font-size: 4rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 1rem;
+}
+
+.simple-frame h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--ion-color-dark);
+}
+
+.simple-frame p {
+  margin: 0 0 2rem 0;
+  color: var(--ion-color-medium);
+}
+
+.simple-frame ion-button {
+  margin-bottom: 1rem;
+}
+
+/* Result Container */
+.result-container {
+  padding: 2rem 1rem;
+  background: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.result-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem auto;
+}
+
+.result-icon.success {
+  background: linear-gradient(135deg, var(--ion-color-success), #10b981);
+  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+}
+
+.result-icon.error {
+  background: linear-gradient(135deg, var(--ion-color-danger), #dc2626);
+  box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
+}
+
+.result-icon ion-icon {
+  font-size: 3rem;
+  color: white;
+}
+
+.result-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.success-text {
+  color: var(--ion-color-success);
+}
+
+.error-text {
+  color: var(--ion-color-danger);
+}
+
+.result-message {
+  color: var(--ion-color-medium);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Ticket Details */
+.ticket-details {
+  flex: 1;
+  margin-bottom: 2rem;
+}
+
+.detail-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+.detail-header ion-icon {
+  font-size: 1.2rem;
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+}
+
+.value {
+  color: var(--ion-color-dark);
+  font-weight: 500;
+  text-align: right;
+}
+
+.value.status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.value.status.active {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--ion-color-success);
+}
+
+.value.status.used {
+  background: rgba(156, 163, 175, 0.1);
+  color: var(--ion-color-medium);
+}
+
+/* Result Actions */
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.scan-again-button {
+  --background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+  --color: white;
+  --border-radius: 16px;
+  --box-shadow: 0 4px 20px rgba(71, 138, 201, 0.3);
+  font-weight: 600;
+  height: 56px;
+}
+
+.back-button {
+  --border-color: var(--ion-color-primary);
+  --color: var(--ion-color-primary);
+  --border-radius: 16px;
+  font-weight: 500;
+  height: 48px;
+}
+
+/* Quick Actions */
+.quick-actions {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.help-button {
+  --color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-height: 700px) {
+  .scan-frame {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .result-icon {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .result-icon ion-icon {
+    font-size: 2.5rem;
+  }
+}

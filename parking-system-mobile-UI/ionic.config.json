@@ -1,0 +1,7 @@
+{
+  "name": "parking-system-mobile-UI",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

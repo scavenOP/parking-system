@@ -1,0 +1,162 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>My Cars</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleAddForm()" [disabled]="cars.length >= 5">
+        <ion-icon name="add" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading cars...</p>
+  </div>
+
+  <!-- Add Car Form -->
+  <ion-card *ngIf="showAddForm" class="add-car-form">
+    <ion-card-header>
+      <ion-card-title>Add New Car</ion-card-title>
+      <ion-card-subtitle>Maximum 5 cars allowed</ion-card-subtitle>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Make *</ion-label>
+        <ion-input 
+          [(ngModel)]="newCar.make" 
+          placeholder="e.g., Toyota, Honda, Ford"
+          required>
+        </ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="stacked">Model *</ion-label>
+        <ion-input 
+          [(ngModel)]="newCar.model" 
+          placeholder="e.g., Camry, Civic, Focus"
+          required>
+        </ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="stacked">Year</ion-label>
+        <ion-input 
+          type="number" 
+          [(ngModel)]="newCar.year" 
+          min="1990" 
+          [max]="2025">
+        </ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="stacked">Color *</ion-label>
+        <ion-input 
+          [(ngModel)]="newCar.color" 
+          placeholder="e.g., Red, Blue, Silver"
+          required>
+        </ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="stacked">License Plate *</ion-label>
+        <ion-input 
+          [(ngModel)]="newCar.licensePlate" 
+          placeholder="e.g., ABC-123"
+          required>
+        </ion-input>
+      </ion-item>
+      
+      <div class="form-buttons">
+        <ion-button 
+          expand="block" 
+          (click)="addCar()" 
+          [disabled]="!isFormValid() || isLoading">
+          <ion-icon name="checkmark" slot="start"></ion-icon>
+          Add Car
+        </ion-button>
+        
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          (click)="toggleAddForm()">
+          <ion-icon name="close" slot="start"></ion-icon>
+          Cancel
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Cars List -->
+  <div *ngIf="!isLoading">
+    <!-- Cars Count -->
+    <div class="cars-header">
+      <h2>Your Vehicles ({{cars.length}}/5)</h2>
+      <p *ngIf="cars.length === 0">No cars added yet. Add your first car to start booking parking spaces.</p>
+    </div>
+
+    <!-- Car Cards -->
+    <ion-card *ngFor="let car of cars" class="car-card">
+      <ion-card-content>
+        <div class="car-info">
+          <div class="car-icon">
+            <ion-icon [name]="getCarIcon(car.make)" size="large"></ion-icon>
+          </div>
+          
+          <div class="car-details">
+            <h3>{{car.make}} {{car.model}}</h3>
+            <p class="car-year">{{car.year}}</p>
+            <p class="car-color">
+              <ion-icon name="color-palette" size="small"></ion-icon>
+              {{car.color}}
+            </p>
+            <p class="license-plate">
+              <ion-icon name="card" size="small"></ion-icon>
+              {{car.licensePlate}}
+            </p>
+          </div>
+          
+          <div class="car-actions">
+            <ion-button 
+              fill="clear" 
+              color="danger" 
+              (click)="deleteCar(car)">
+              <ion-icon name="trash" slot="icon-only"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+        
+        <div class="car-status" *ngIf="car.isActive">
+          <ion-chip color="success">
+            <ion-icon name="checkmark-circle" size="small"></ion-icon>
+            <ion-label>Active</ion-label>
+          </ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Empty State -->
+    <div *ngIf="cars.length === 0" class="empty-state">
+      <ion-icon name="car-outline" size="large"></ion-icon>
+      <h3>No Cars Added</h3>
+      <p>Add your first vehicle to start booking parking spaces</p>
+      <ion-button 
+        expand="block" 
+        (click)="toggleAddForm()" 
+        class="add-first-car-btn">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Add Your First Car
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Refresh Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!showAddForm">
+    <ion-fab-button (click)="loadCars()" size="small">
+      <ion-icon name="refresh"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,234 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="transparent">
+    <ion-title class="page-title">My Bookings</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="refreshBookings()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bookings-content" [fullscreen]="true">
+  <!-- Stats Header -->
+  <div class="stats-header">
+    <div class="stat-card">
+      <div class="stat-icon primary">
+        <ion-icon name="car-outline"></ion-icon>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{activeBookings.length}}</span>
+        <span class="stat-label">Active</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon success">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{completedBookings.length}}</span>
+        <span class="stat-label">Completed</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon warning">
+        <ion-icon name="time-outline"></ion-icon>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{getTotalHours()}}</span>
+        <span class="stat-label">Hours</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <ion-segment [(ngModel)]="selectedTab" (ionChange)="onTabChange($event)">
+      <ion-segment-button value="active">
+        <ion-label>Active</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="completed">
+        <ion-label>Completed</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="cancelled">
+        <ion-label>Cancelled</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading your bookings...</p>
+  </div>
+
+  <!-- Active Bookings -->
+  <div class="bookings-section" *ngIf="!isLoading && selectedTab === 'active'">
+    <div class="booking-card active" *ngFor="let booking of activeBookings" (click)="viewBookingDetails(booking)">
+      <div class="booking-header">
+        <div class="booking-status active">
+          <ion-icon name="radio-button-on"></ion-icon>
+          <span>Active</span>
+        </div>
+        <div class="booking-time">
+          <span>{{formatTime(booking.startTime)}}</span>
+        </div>
+      </div>
+      
+      <div class="booking-main">
+        <div class="space-info">
+          <div class="space-number">
+            <ion-icon name="car-outline"></ion-icon>
+            <span>Space {{booking.spaceNumber}}</span>
+          </div>
+          <div class="space-details">
+            <span>Floor {{booking.floor}} • {{booking.duration}} hours</span>
+          </div>
+        </div>
+        
+        <div class="booking-amount">
+          <span class="amount">₹{{booking.totalAmount}}</span>
+        </div>
+      </div>
+      
+      <div class="booking-actions">
+        <ion-button 
+          fill="clear" 
+          size="small" 
+          (click)="showQRCode(booking); $event.stopPropagation()">
+          <ion-icon name="qr-code-outline" slot="start"></ion-icon>
+          QR Ticket
+        </ion-button>
+        
+        <ion-button 
+          fill="clear" 
+          size="small" 
+          color="danger"
+          (click)="cancelBooking(booking); $event.stopPropagation()">
+          <ion-icon name="close-outline" slot="start"></ion-icon>
+          Cancel
+        </ion-button>
+      </div>
+      
+      <div class="booking-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getBookingProgress(booking)"></div>
+        </div>
+        <span class="progress-text">{{getTimeRemaining(booking)}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Completed Bookings -->
+  <div class="bookings-section" *ngIf="!isLoading && selectedTab === 'completed'">
+    <div class="booking-card completed" *ngFor="let booking of completedBookings" (click)="viewBookingDetails(booking)">
+      <div class="booking-header">
+        <div class="booking-status completed">
+          <ion-icon name="checkmark-circle"></ion-icon>
+          <span>Completed</span>
+        </div>
+        <div class="booking-date">
+          <span>{{formatDate(booking.endTime)}}</span>
+        </div>
+      </div>
+      
+      <div class="booking-main">
+        <div class="space-info">
+          <div class="space-number">
+            <ion-icon name="car-outline"></ion-icon>
+            <span>Space {{booking.spaceNumber}}</span>
+          </div>
+          <div class="space-details">
+            <span>Floor {{booking.floor}} • {{booking.duration}} hours</span>
+          </div>
+        </div>
+        
+        <div class="booking-amount">
+          <span class="amount">₹{{booking.totalAmount}}</span>
+        </div>
+      </div>
+      
+      <div class="booking-actions">
+        <ion-button 
+          fill="clear" 
+          size="small"
+          (click)="downloadReceipt(booking); $event.stopPropagation()">
+          <ion-icon name="download-outline" slot="start"></ion-icon>
+          Receipt
+        </ion-button>
+        
+        <ion-button 
+          fill="clear" 
+          size="small"
+          (click)="rateExperience(booking); $event.stopPropagation()">
+          <ion-icon name="star-outline" slot="start"></ion-icon>
+          Rate
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancelled Bookings -->
+  <div class="bookings-section" *ngIf="!isLoading && selectedTab === 'cancelled'">
+    <div class="booking-card cancelled" *ngFor="let booking of cancelledBookings" (click)="viewBookingDetails(booking)">
+      <div class="booking-header">
+        <div class="booking-status cancelled">
+          <ion-icon name="close-circle"></ion-icon>
+          <span>Cancelled</span>
+        </div>
+        <div class="booking-date">
+          <span>{{formatDate(booking.cancelledAt)}}</span>
+        </div>
+      </div>
+      
+      <div class="booking-main">
+        <div class="space-info">
+          <div class="space-number">
+            <ion-icon name="car-outline"></ion-icon>
+            <span>Space {{booking.spaceNumber}}</span>
+          </div>
+          <div class="space-details">
+            <span>Floor {{booking.floor}} • Cancelled</span>
+          </div>
+        </div>
+        
+        <div class="refund-info">
+          <span class="refund-amount">₹{{booking.refundAmount}} refunded</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && getCurrentBookings().length === 0">
+    <div class="empty-icon">
+      <ion-icon [name]="getEmptyStateIcon()"></ion-icon>
+    </div>
+    <h4>{{getEmptyStateTitle()}}</h4>
+    <p>{{getEmptyStateMessage()}}</p>
+    <ion-button 
+      fill="outline" 
+      (click)="goToSearch()"
+      *ngIf="selectedTab === 'active'">
+      <ion-icon name="search-outline" slot="start"></ion-icon>
+      Find Parking
+    </ion-button>
+  </div>
+
+  <!-- Quick Actions FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="goToSearch()">
+        <ion-icon name="search-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="scanQRCode()" *ngIf="isAdmin()">
+        <ion-icon name="qr-code-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
