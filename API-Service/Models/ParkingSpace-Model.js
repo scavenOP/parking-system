@@ -3,8 +3,7 @@ import mongoose from 'mongoose';
 const parkingSpaceSchema = new mongoose.Schema({
   spaceNumber: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   floor: {
     type: Number,
@@ -30,6 +29,6 @@ const parkingSpaceSchema = new mongoose.Schema({
 
 // Index for faster queries
 parkingSpaceSchema.index({ floor: 1, isActive: 1 });
-parkingSpaceSchema.index({ spaceNumber: 1 });
+parkingSpaceSchema.index({ spaceNumber: 1 }, { unique: true });
 
 export default mongoose.model('ParkingSpace', parkingSpaceSchema);

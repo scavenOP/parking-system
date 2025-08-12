@@ -5,8 +5,6 @@ dotenv.config();
 const connectionString = process.env.MONGODB_URL || "";
 
 mongoose.connect(connectionString, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     dbName: 'MoneyManagement'
 });
 

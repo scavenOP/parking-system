@@ -4,8 +4,7 @@ const ticketSchema = new mongoose.Schema({
   bookingId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Booking',
-    required: true,
-    unique: true
+    required: true
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -19,8 +18,7 @@ const ticketSchema = new mongoose.Schema({
   },
   qrToken: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   qrCodeData: {
     type: String,
@@ -44,8 +42,8 @@ const ticketSchema = new mongoose.Schema({
 });
 
 // Index for faster queries
-ticketSchema.index({ qrToken: 1 });
-ticketSchema.index({ bookingId: 1 });
+ticketSchema.index({ qrToken: 1 }, { unique: true });
+ticketSchema.index({ bookingId: 1 }, { unique: true });
 ticketSchema.index({ expiresAt: 1 });
 
 export default mongoose.model('Ticket', ticketSchema);

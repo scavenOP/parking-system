@@ -30,7 +30,6 @@ const carSchema = new mongoose.Schema({
   licensePlate: {
     type: String,
     required: true,
-    unique: true,
     uppercase: true,
     trim: true
   },
@@ -44,6 +43,6 @@ const carSchema = new mongoose.Schema({
 
 // Index for faster queries
 carSchema.index({ userId: 1, isActive: 1 });
-carSchema.index({ licensePlate: 1 });
+carSchema.index({ licensePlate: 1 }, { unique: true });
 
 export default mongoose.model('Car', carSchema);
