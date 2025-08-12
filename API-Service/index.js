@@ -54,6 +54,16 @@ app.use(express.static(path.join(__dirname, 'public', 'browser'), {
 
 
 
+// Health check endpoint
+router.get("/api/health", (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // // Get a list of 50 posts
 router.get("/transaction", async (req, res) => {
     let collection = await db.collection("spend_transaction");
