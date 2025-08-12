@@ -65,9 +65,14 @@ export async function loginUser(username, password) {
     }
 
     // Generate a JWT token
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+        throw new Error('JWT_SECRET environment variable is not set');
+    }
+    
     const token = jwt.sign(
         { userId: user._id, role: user.Role ? user.Role.RoleName : 'User' }, // Use role name
-        process.env.JWT_SECRET, // Secret key from .env
+        jwtSecret, // Secret key from .env
         { expiresIn: '1h' } // Token expiration time
     );
 
