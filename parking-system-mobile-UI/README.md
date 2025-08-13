@@ -1,6 +1,6 @@
 # 📱 Smart Parking Mobile App
 
-Ionic Angular mobile application for the Smart Parking System with QR ticket integration. 
+Ionic Angular mobile application for the Smart Parking System with QR ticket integration.
 
 ## 🚀 Quick Start
 
