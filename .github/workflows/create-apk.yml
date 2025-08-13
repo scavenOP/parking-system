@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Adjust Node.js version as needed
+          node-version: '20.19' # Adjust Node.js version as needed
 
       - name: Install Ionic CLI and Capacitor
         run: npm install -g @ionic/cli @capacitor/core @capacitor/cli @capacitor/android
