@@ -229,8 +229,8 @@ export class ReservationsComponent implements OnInit {
         console.log('Found ticket:', ticket);
         
         if (ticket) {
-          this.ticketQRs[bookingId] = ticket.qrCodeData;
-          console.log('QR data set for booking:', bookingId);
+          // Generate simple QR code with ticket ID
+          await this.generateSimpleQR(ticket._id, bookingId);
         } else {
           console.log('No ticket found for booking:', bookingId);
           // Generate ticket if it doesn't exist
@@ -255,12 +255,32 @@ export class ReservationsComponent implements OnInit {
       console.log('Generate ticket response:', response);
       
       if (response.success) {
-        this.ticketQRs[bookingId] = response.data.qrCodeData;
-        console.log('Generated QR data for booking:', bookingId);
+        // Generate simple QR code with ticket ID
+        await this.generateSimpleQR(response.data._id, bookingId);
       }
     } catch (error) {
       console.error('Error generating ticket:', error);
       alert('Failed to generate ticket. Please try again.');
+    }
+  }
+
+  async generateSimpleQR(ticketId: string, bookingId: string) {
+    try {
+      const booking = this.bookings.find(b => b._id === bookingId);
+      const qrData = JSON.stringify({
+        ticketId: ticketId,
+        validUntil: booking?.endTime || new Date()
+      });
+      
+      const QRCode = await import('qrcode');
+      this.ticketQRs[bookingId] = await QRCode.default.toDataURL(qrData, {
+        width: 200,
+        margin: 2,
+        errorCorrectionLevel: 'M'
+      });
+      console.log('Generated simple QR for booking:', bookingId);
+    } catch (error) {
+      console.error('Error generating simple QR:', error);
     }
   }
 }

@@ -74,6 +74,10 @@ export class Tab1Page implements OnInit {
     this.router.navigate(['/qr-scanner']);
   }
 
+  isAdmin(): boolean {
+    return this.authService.getUserRole() === 'Admin';
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/home']);

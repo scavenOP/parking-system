@@ -44,14 +44,11 @@ const paymentSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  expiresAt: {
-    type: Date,
-    required: false
-  }
+  // Removed expiresAt - payments should never be auto-deleted
 }, {
   timestamps: true
 });
 
-// Removed TTL index - payments are preserved permanently
+// Payments are preserved permanently - no TTL index
 
 export default mongoose.model('Payment', paymentSchema);

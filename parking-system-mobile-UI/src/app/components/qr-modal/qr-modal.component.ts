@@ -86,25 +86,32 @@ import * as QRCode from 'qrcode';
 })
 export class QrModalComponent {
   @Input() booking: any;
+  @Input() qrCodeData: string = '';
   qrCodeDataURL: string = '';
 
   constructor(private modalController: ModalController) {}
 
   async ngOnInit() {
-    await this.generateQRCode();
+    // Use the pre-loaded QR code data if available
+    if (this.qrCodeData) {
+      this.qrCodeDataURL = this.qrCodeData;
+    } else {
+      await this.generateQRCode();
+    }
   }
 
   async generateQRCode() {
     try {
+      // Use simple JSON format with ticketId
       const qrData = JSON.stringify({
         ticketId: this.booking._id,
-        spaceNumber: this.booking.spaceNumber,
         validUntil: this.booking.endTime
       });
       
       this.qrCodeDataURL = await QRCode.toDataURL(qrData, {
         width: 200,
-        margin: 2
+        margin: 2,
+        errorCorrectionLevel: 'M'
       });
     } catch (error) {
       console.error('Error generating QR code:', error);

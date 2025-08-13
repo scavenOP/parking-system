@@ -52,6 +52,9 @@
       <ion-segment-button value="active">
         <ion-label>Active</ion-label>
       </ion-segment-button>
+      <ion-segment-button value="in_progress">
+        <ion-label>In Progress</ion-label>
+      </ion-segment-button>
       <ion-segment-button value="completed">
         <ion-label>Completed</ion-label>
       </ion-segment-button>
@@ -120,6 +123,48 @@
           <div class="progress-fill" [style.width.%]="getBookingProgress(booking)"></div>
         </div>
         <span class="progress-text">{{getTimeRemaining(booking)}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- In Progress Bookings -->
+  <div class="bookings-section" *ngIf="!isLoading && selectedTab === 'in_progress'">
+    <div class="booking-card in-progress" *ngFor="let booking of inProgressBookings" (click)="viewBookingDetails(booking)">
+      <div class="booking-header">
+        <div class="booking-status in-progress">
+          <ion-icon name="play-circle"></ion-icon>
+          <span>In Progress</span>
+        </div>
+        <div class="booking-time">
+          <span>{{formatTime(booking.endTime)}}</span>
+        </div>
+      </div>
+      
+      <div class="booking-main">
+        <div class="space-info">
+          <div class="space-number">
+            <ion-icon name="car-outline"></ion-icon>
+            <span>Space {{booking.spaceNumber}}</span>
+          </div>
+          <div class="space-details">
+            <span>Floor {{booking.floor}} • {{booking.duration}} hours</span>
+          </div>
+        </div>
+        
+        <div class="booking-amount">
+          <span class="amount">₹{{booking.totalAmount}}</span>
+        </div>
+      </div>
+      
+      <div class="booking-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getBookingProgress(booking)"></div>
+        </div>
+        <span class="progress-text">{{getTimeRemaining(booking)}}</span>
+      </div>
+      
+      <div class="status-info">
+        <p>🚗 Parking session active until {{formatTime(booking.endTime)}}</p>
       </div>
     </div>
   </div>

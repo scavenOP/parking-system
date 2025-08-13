@@ -40,7 +40,7 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-card class="action-card" (click)="goToQRScanner()">
+    <ion-card class="action-card" (click)="goToQRScanner()" *ngIf="isAdmin()">
       <ion-card-content>
         <ion-icon name="qr-code-outline" color="danger"></ion-icon>
         <h3>QR Scanner</h3>

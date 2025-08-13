@@ -159,7 +159,10 @@ export class QrScannerPage implements OnInit, OnDestroy {
   async handleScanResult(qrData: string) {
     this.stopScanning();
     
+    console.log('QR Code detected:', qrData);
+    
     try {
+      // Use the same validation method as web
       const result = await this.ticketService.validateQRCode(qrData).toPromise();
       
       if (result) {
@@ -167,9 +170,10 @@ export class QrScannerPage implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('QR validation error:', error);
-      
-      // Show mock result for demo
-      this.scanResult = this.generateMockResult();
+      this.scanResult = {
+        valid: false,
+        message: 'Validation failed: ' + (error as any).message
+      };
     }
   }
 
@@ -191,29 +195,7 @@ export class QrScannerPage implements OnInit, OnDestroy {
     }
   }
 
-  private generateMockResult(): QRValidationResult {
-    const isValid = Math.random() > 0.3; // 70% success rate for demo
-    
-    return {
-      valid: isValid,
-      message: isValid ? 'Valid ticket - Entry granted' : 'Invalid or expired ticket',
-      ticket: isValid ? {
-        _id: 'demo-ticket-id',
-        bookingId: 'demo-booking-id',
-        ticketNumber: 'TKT-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-        qrCode: 'mock-qr-data',
-        status: 'active',
-        expiryTime: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours from now
-        isUsed: false
-      } : undefined,
-      booking: isValid ? {
-        spaceNumber: 'A' + Math.floor(Math.random() * 50 + 1).toString().padStart(2, '0')
-      } : undefined,
-      user: isValid ? {
-        name: 'John Doe'
-      } : undefined
-    };
-  }
+
 
   async uploadFromGallery() {
     const input = document.createElement('input');

@@ -52,7 +52,8 @@ class JobScheduler {
       booking.paymentStatus = 'expired';
       await booking.save();
       
-      // Keep payment records intact - no payment status changes
+      // IMPORTANT: Keep payment records intact - never delete payments
+      // Only update booking status, payments are preserved for history
       
       cancelledCount++;
     }

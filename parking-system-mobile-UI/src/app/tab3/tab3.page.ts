@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastController, AlertController, ModalController } from '@ionic/angular';
 import { ParkingService } from '../services/parking.service';
 import { AuthService } from '../services/auth.service';
+import { TicketService } from '../services/ticket.service';
 
 interface Booking {
   _id: string;
@@ -29,8 +30,10 @@ export class Tab3Page implements OnInit {
   isLoading = false;
   
   activeBookings: Booking[] = [];
+  inProgressBookings: Booking[] = [];
   completedBookings: Booking[] = [];
   cancelledBookings: Booking[] = [];
+  ticketQRs: { [key: string]: string } = {};
 
   constructor(
     private router: Router,
@@ -38,7 +41,8 @@ export class Tab3Page implements OnInit {
     private toastController: ToastController,
     private alertController: AlertController,
     private modalController: ModalController,
-    private authService: AuthService
+    private authService: AuthService,
+    private ticketService: TicketService
   ) {}
 
   ngOnInit() {
@@ -58,12 +62,10 @@ export class Tab3Page implements OnInit {
       if (response && response.data) {
         this.processBookings(response.data);
       } else {
-        // Generate mock data for demo
         this.generateMockBookings();
       }
     } catch (error) {
       console.error('Error loading bookings:', error);
-      // Generate mock data for demo
       this.generateMockBookings();
     } finally {
       this.isLoading = false;
@@ -142,6 +144,7 @@ export class Tab3Page implements OnInit {
 
   processBookings(bookings: any[]) {
     this.activeBookings = bookings.filter(b => b.status === 'active');
+    this.inProgressBookings = bookings.filter(b => b.status === 'in_progress');
     this.completedBookings = bookings.filter(b => b.status === 'completed');
     this.cancelledBookings = bookings.filter(b => b.status === 'cancelled');
   }
@@ -154,6 +157,8 @@ export class Tab3Page implements OnInit {
     switch (this.selectedTab) {
       case 'active':
         return this.activeBookings;
+      case 'in_progress':
+        return this.inProgressBookings;
       case 'completed':
         return this.completedBookings;
       case 'cancelled':
@@ -219,6 +224,8 @@ export class Tab3Page implements OnInit {
     switch (this.selectedTab) {
       case 'active':
         return 'car-outline';
+      case 'in_progress':
+        return 'play-circle-outline';
       case 'completed':
         return 'checkmark-circle-outline';
       case 'cancelled':
@@ -232,6 +239,8 @@ export class Tab3Page implements OnInit {
     switch (this.selectedTab) {
       case 'active':
         return 'No active bookings';
+      case 'in_progress':
+        return 'No in progress bookings';
       case 'completed':
         return 'No completed bookings';
       case 'cancelled':
@@ -245,6 +254,8 @@ export class Tab3Page implements OnInit {
     switch (this.selectedTab) {
       case 'active':
         return 'Book a parking space to see your active reservations here';
+      case 'in_progress':
+        return 'Your ongoing parking sessions will appear here';
       case 'completed':
         return 'Your completed parking sessions will appear here';
       case 'cancelled':
@@ -265,12 +276,16 @@ export class Tab3Page implements OnInit {
   }
 
   async showQRCode(booking: Booking) {
+    // Load ticket data first
+    await this.loadTicket(booking._id);
+    
     const { QrModalComponent } = await import('../components/qr-modal/qr-modal.component');
     
     const modal = await this.modalController.create({
       component: QrModalComponent,
       componentProps: {
-        booking: booking
+        booking: booking,
+        qrCodeData: this.ticketQRs[booking._id]
       }
     });
     
@@ -325,6 +340,68 @@ export class Tab3Page implements OnInit {
 
   scanQRCode() {
     this.router.navigate(['/qr-scanner']);
+  }
+
+  async loadTicket(bookingId: string) {
+    try {
+      console.log('Loading ticket for booking:', bookingId);
+      const response = await this.ticketService.getUserTickets().toPromise();
+      console.log('Ticket response:', response);
+      
+      if (response.success) {
+        const ticket = response.data.find((t: any) => t.bookingId._id === bookingId || t.bookingId === bookingId);
+        console.log('Found ticket:', ticket);
+        
+        if (ticket) {
+          // Generate simple QR code with ticket ID
+          await this.generateSimpleQR(ticket._id, bookingId);
+        } else {
+          console.log('No ticket found for booking:', bookingId);
+          // Generate ticket if it doesn't exist
+          await this.generateTicket(bookingId);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading ticket:', error);
+      // Try to generate ticket if loading fails
+      await this.generateTicket(bookingId);
+    }
+  }
+
+  async generateTicket(bookingId: string) {
+    try {
+      console.log('Generating ticket for booking:', bookingId);
+      const response = await this.ticketService.generateTicket(bookingId).toPromise();
+      console.log('Generate ticket response:', response);
+      
+      if (response.success) {
+        // Generate simple QR code with ticket ID
+        await this.generateSimpleQR(response.data._id, bookingId);
+      }
+    } catch (error) {
+      console.error('Error generating ticket:', error);
+      await this.showToast('Failed to generate ticket. Please try again.', 'danger');
+    }
+  }
+
+  async generateSimpleQR(ticketId: string, bookingId: string) {
+    try {
+      const booking = this.activeBookings.find(b => b._id === bookingId);
+      const qrData = JSON.stringify({
+        ticketId: ticketId,
+        validUntil: booking?.endTime || new Date()
+      });
+      
+      const QRCode = await import('qrcode');
+      this.ticketQRs[bookingId] = await QRCode.default.toDataURL(qrData, {
+        width: 200,
+        margin: 2,
+        errorCorrectionLevel: 'M'
+      });
+      console.log('Generated simple QR for booking:', bookingId);
+    } catch (error) {
+      console.error('Error generating simple QR:', error);
+    }
   }
 
   private async showToast(message: string, color: string) {

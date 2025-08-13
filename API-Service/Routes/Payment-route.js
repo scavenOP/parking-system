@@ -101,17 +101,13 @@ router.post('/create-order', authenticateToken, async (req, res) => {
             payment_capture: 1
         });
         
-        // Create payment record
-        const expiresAt = new Date();
-        expiresAt.setMinutes(expiresAt.getMinutes() + 5);
-        
+        // Create payment record (no expiry - payments are preserved permanently)
         const payment = new PaymentModel({
             userId: req.user.userId,
             bookingId: bookingId,
             razorpayOrderId: razorpayOrder.id,
             amount: booking.totalAmount,
-            status: 'pending',
-            expiresAt: expiresAt
+            status: 'pending'
         });
         
         await payment.save();
