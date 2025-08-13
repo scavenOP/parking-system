@@ -18,25 +18,25 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Adjust Node.js version as needed
+          node-version: '18'
 
       - name: Install Ionic CLI and Cordova
         run: npm install -g @ionic/cli cordova
 
-      - name: Navigate to Mobile app directory
-        run: cd parking-system-mobile-UI
-
       - name: Install dependencies
         run: npm install
+        working-directory: parking-system-mobile-UI  # Execute npm install within the Mobile directory
 
       - name: Add Android platform
         run: npx ionic cordova platform add android --no-resources --allow-superuser
+        working-directory: parking-system-mobile-UI  # Execute ionic cordova platform add android within the Mobile directory
 
       - name: Build Android debug APK
         run: npx ionic cordova build android --prod -- --buildConfig=build.json --output ./APK/app-debug.apk
+        working-directory: parking-system-mobile-UI # Execute ionic cordova build android within the Mobile directory
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk
-          path: Smart Parking.apk 
+          path: Smart-Connect.apk
