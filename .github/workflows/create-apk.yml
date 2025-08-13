@@ -1,0 +1,42 @@
+name: Build Android APK on Mobile Folder Changes
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch
+    paths:
+      - 'parking-system-mobile-UI/**' # Trigger only if changes are made within the "Mobile" folder
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Adjust Node.js version as needed
+
+      - name: Install Ionic CLI and Cordova
+        run: npm install -g @ionic/cli cordova
+
+      - name: Navigate to Mobile app directory
+        run: cd Mobile
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Add Android platform
+        run: npx ionic cordova platform add android --no-resources --allow-superuser
+
+      - name: Build Android debug APK
+        run: npx ionic cordova build android --prod -- --buildConfig=build.json --output ./APK/app-debug.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: debug-apk
+          path: Mobile/APK/app-debug.apk 
