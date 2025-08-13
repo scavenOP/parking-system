@@ -78,22 +78,39 @@ class TicketService {
 
   async validateTicket(qrToken) {
     try {
-      // Verify JWT token
-      const decoded = jwt.verify(qrToken, process.env.JWT_SECRET, {
-        issuer: 'parking-system',
-        audience: 'ticket-scanner'
-      });
+      let ticket;
+      
+      // Try to parse as JSON first (simple format)
+      try {
+        const qrData = JSON.parse(qrToken);
+        if (qrData.ticketId) {
+          ticket = await Ticket.findById(qrData.ticketId)
+            .populate({
+              path: 'bookingId',
+              populate: [
+                { path: 'spaceId', select: 'spaceNumber floor' },
+                { path: 'carId', select: 'make model licensePlate' }
+              ]
+            })
+            .populate('userId', 'Name Email');
+        }
+      } catch (jsonError) {
+        // If JSON parsing fails, try JWT format
+        const decoded = jwt.verify(qrToken, process.env.JWT_SECRET, {
+          issuer: 'parking-system',
+          audience: 'ticket-scanner'
+        });
 
-      // Find ticket in database
-      const ticket = await Ticket.findOne({ qrToken })
-        .populate({
-          path: 'bookingId',
-          populate: [
-            { path: 'spaceId', select: 'spaceNumber floor' },
-            { path: 'carId', select: 'make model licensePlate' }
-          ]
-        })
-        .populate('userId', 'Name Email');
+        ticket = await Ticket.findOne({ qrToken })
+          .populate({
+            path: 'bookingId',
+            populate: [
+              { path: 'spaceId', select: 'spaceNumber floor' },
+              { path: 'carId', select: 'make model licensePlate' }
+            ]
+          })
+          .populate('userId', 'Name Email');
+      }
 
       if (!ticket) {
         return { valid: false, message: 'Invalid ticket' };
