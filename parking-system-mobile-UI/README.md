@@ -265,7 +265,7 @@ cd android
 - Optimize images and assets
 - Implement virtual scrolling for large lists
 
-## 📱 Testing
+## 📱Testing
 
 ### Device Testing
 ```bash
