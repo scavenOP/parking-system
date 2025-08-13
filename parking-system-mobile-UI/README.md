@@ -182,7 +182,7 @@ src/
 - `npx cap run android` - Run on Android
 - `npx cap run ios` - Run on iOS
 
-## 🔒 Security
+## 🔒 Security 
 
 - HTTPS API communication
 - JWT token authentication
