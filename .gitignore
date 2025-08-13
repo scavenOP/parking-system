@@ -16,6 +16,7 @@ dist/
 build/
 coverage/
 public/
+www/
 
 # Angular-specific files
 .angular/
@@ -55,3 +56,26 @@ jest-test-results.json
 # Angular CLI temporary files
 .sass-cache/
 .tmp/
+
+# Mobile/Capacitor build files
+android/app/build/
+!android/app/build/outputs/apk/debug/app-debug.apk
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/.gradle/
+android/build/
+android/local.properties
+android/gradle/
+android/gradlew*
+ios/App/build/
+ios/App/Pods/
+ios/App/Podfile.lock
+ios/App/App.xcworkspace/
+
+# Android SDK
+android-sdk/
+commandlinetools-*.zip
+
+# Capacitor generated files
+capacitor.config.json
+.capacitor/

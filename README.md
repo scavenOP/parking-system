@@ -264,31 +264,119 @@ POST /api/ticket/cleanup-expired    # Admin cleanup
 - **Admin Panel**: `http://localhost:8000/dashboard`
 
 ### Mobile Application
-- **Mobile App**: `http://localhost:8100`
-- **Mobile QR Scanner**: `http://localhost:8100/qr-scanner`
+- **Development**: `http://localhost:8100`
+- **Production**: Install APK/iOS app from build process above
 
-## 📱 Mobile App Features
+---
 
-### **Native Mobile Experience**
-- ✅ **Touch-optimized interface** with gesture support
-- ✅ **Bottom tab navigation** for easy thumb access
-- ✅ **Native camera integration** for QR scanning
-- ✅ **Offline capability** with data caching
-- ✅ **Push notifications** ready (future enhancement)
-- ✅ **Biometric authentication** support (future)
+## 📱 **Mobile App Build & Installation**
 
-### **Mobile-Specific Features**
-- ✅ **Swipe gestures** for navigation
-- ✅ **Pull-to-refresh** on booking lists
-- ✅ **Haptic feedback** for interactions
-- ✅ **Device orientation** support
-- ✅ **Background app refresh** for real-time updates
-- ✅ **Deep linking** for booking sharing
+### 🔧 **Prerequisites**
+- Node.js 18+ installed
+- For Android: Java 11+ 
+- For iOS: macOS with Xcode
 
-### **Cross-Platform Deployment**
-- ✅ **Android APK** build ready
-- ✅ **iOS App Store** build ready
-- ✅ **Progressive Web App** (PWA) support
-- ✅ **Responsive design** for all screen sizes
+### 🚀 **Build Mobile App**
 
-**The complete smart parking ecosystem is now operational across web and mobile!** 🏢🚗💳📱
+#### **1. Install Dependencies**
+```bash
+cd parking-system-mobile-UI
+npm install
+```
+
+#### **2. Build Web Assets**
+```bash
+npm run build
+```
+
+#### **3. Setup Capacitor**
+```bash
+# Install Capacitor platforms
+npm install @capacitor/android @capacitor/ios
+
+# Add platforms
+npx cap add android
+npx cap add ios  # macOS only
+
+# Copy web assets
+npx cap copy
+npx cap sync
+```
+
+### 📱 **Android APK Build**
+
+#### **Option 1: Direct APK Build**
+```bash
+# Setup Android SDK (if not installed)
+wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+mkdir -p android-sdk/cmdline-tools
+unzip commandlinetools-linux-11076708_latest.zip -d android-sdk/cmdline-tools
+mv android-sdk/cmdline-tools/cmdline-tools android-sdk/cmdline-tools/latest
+
+# Install SDK components
+export ANDROID_HOME=/path/to/android-sdk
+yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+# Create local.properties
+echo "sdk.dir=/path/to/android-sdk" > parking-system-mobile-UI/android/local.properties
+
+# Build APK
+cd parking-system-mobile-UI/android
+export ANDROID_HOME=/path/to/android-sdk
+bash gradlew assembleDebug
+```
+
+**APK Location:** `android/app/build/outputs/apk/debug/app-debug.apk`
+
+**Upload APK to Repository:**
+```bash
+# Force add APK to git (since it's in build folder)
+git add -f parking-system-mobile-UI/android/app/build/outputs/apk/debug/app-debug.apk
+git commit -m "Add Android APK for direct download"
+git push
+```
+
+#### **Option 2: Android Studio**
+```bash
+npx cap open android
+```
+- Connect Android device
+- Click "Run" to install
+
+### 🍎 **iOS Build (macOS Only)**
+```bash
+npx cap open ios
+```
+- Open in Xcode
+- Connect iPhone or use simulator
+- Click "Run" to install
+
+### 🔄 **Update Process**
+After making changes:
+```bash
+npm run build
+npx cap copy
+npx cap sync
+```
+
+### 📦 **Installation**
+
+**Android:**
+1. Transfer APK to device
+2. Enable "Install from Unknown Sources"
+3. Install APK
+
+**iOS:**
+1. Requires Apple Developer account
+2. Build through Xcode
+3. Install via TestFlight or direct install
+
+### ✅ **Mobile App Features**
+- Vehicle management
+- Parking space booking with real-time validation
+- Razorpay payment integration
+- QR ticket generation and display
+- Camera-based QR scanner for entry
+- Mobile-optimized UI with proper navigation
+
+**Ready for production deployment!** 📱🚀
