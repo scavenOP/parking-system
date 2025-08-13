@@ -307,34 +307,22 @@ npx cap sync
 
 #### **Option 1: Direct APK Build**
 ```bash
-# Setup Android SDK (if not installed)
-wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-mkdir -p android-sdk/cmdline-tools
-unzip commandlinetools-linux-11076708_latest.zip -d android-sdk/cmdline-tools
-mv android-sdk/cmdline-tools/cmdline-tools android-sdk/cmdline-tools/latest
+# Navigate to mobile UI directory
+cd parking-system-mobile-UI
 
-# Install SDK components
-export ANDROID_HOME=/path/to/android-sdk
-yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+# Build the web assets
+npm run build
 
-# Create local.properties
-echo "sdk.dir=/path/to/android-sdk" > parking-system-mobile-UI/android/local.properties
+# Sync with Capacitor
+npx cap sync
 
 # Build APK
-cd parking-system-mobile-UI/android
-export ANDROID_HOME=/path/to/android-sdk
-bash gradlew assembleDebug
+cd android
+chmod +x gradlew
+./gradlew assembleDebug
 ```
 
 **APK Location:** `android/app/build/outputs/apk/debug/app-debug.apk`
-
-**Upload APK to Repository:**
-```bash
-# Force add APK to git (since it's in build folder)
-git add -f parking-system-mobile-UI/android/app/build/outputs/apk/debug/app-debug.apk
-git commit -m "Add Android APK for direct download"
-git push
-```
 
 #### **Option 2: Android Studio**
 ```bash
