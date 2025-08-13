@@ -56,7 +56,7 @@ jobs:
         working-directory: parking-system-mobile-UI
 
       - name: Build Android debug APK
-        run: cd android && ./gradlew assembleDebug
+        run: cd android & chmod +x gradlew & ./gradlew assembleDebug
         working-directory: parking-system-mobile-UI
 
       - name: Create APK directory in root
