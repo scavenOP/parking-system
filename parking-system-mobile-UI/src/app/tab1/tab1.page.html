@@ -47,6 +47,14 @@
         <p>Entry scanner</p>
       </ion-card-content>
     </ion-card>
+
+    <ion-card class="action-card" (click)="goToAdminDashboard()" *ngIf="isAdmin()">
+      <ion-card-content>
+        <ion-icon name="settings" color="tertiary"></ion-icon>
+        <h3>Admin Dashboard</h3>
+        <p>System management</p>
+      </ion-card-content>
+    </ion-card>
   </div>
 
   <div class="stats-section" *ngIf="stats">

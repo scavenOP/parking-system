@@ -42,8 +42,9 @@ router.get('/user-stats', authenticateToken, async (req, res) => {
 router.get('/admin-stats', authenticateToken, async (req, res) => {
     try {
         // Check if user is admin
-        const user = await UserModel.findById(req.user.userId);
-        if (user.Role !== 'Admin') {
+        const user = await UserModel.findById(req.user.userId).populate('Role');
+        console.log(user);
+        if (!user || (user.Role.RoleName !== 'Admin' && user.Role.RoleName !== 'admin')) {
             return res.status(403).json({ success: false, message: 'Admin access required' });
         }
         

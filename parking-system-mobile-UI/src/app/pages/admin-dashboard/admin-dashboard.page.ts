@@ -78,6 +78,10 @@ export class AdminDashboardPage implements OnInit {
     this.router.navigate(['/qr-scanner']);
   }
 
+  viewSystemLogs() {
+    this.router.navigate(['/system-logs']);
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);

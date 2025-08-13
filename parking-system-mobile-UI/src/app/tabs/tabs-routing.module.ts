@@ -28,6 +28,10 @@ const routes: Routes = [
         loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
       },
       {
+        path: 'admin-dashboard',
+        loadChildren: () => import('../pages/admin-dashboard/admin-dashboard.module').then(m => m.AdminDashboardPageModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/dashboard',
         pathMatch: 'full'

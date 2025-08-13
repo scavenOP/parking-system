@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/admin-dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>System Logs</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refreshLogs()">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Tab Selector -->
+  <ion-segment [(ngModel)]="activeTab" (ionChange)="switchTab($event.detail.value!)">
+    <ion-segment-button value="website">
+      <ion-label>Website</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="jobs">
+      <ion-label>Jobs</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Filters -->
+  <ion-card class="filters-card">
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-select [(ngModel)]="filterHours" (ionChange)="onFilterChange()" placeholder="Time Filter">
+              <ion-select-option value="1">Last 1 Hour</ion-select-option>
+              <ion-select-option value="6">Last 6 Hours</ion-select-option>
+              <ion-select-option value="24">Last 24 Hours</ion-select-option>
+              <ion-select-option value="168">Last 7 Days</ion-select-option>
+              <ion-select-option value="0">All Time</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-select [(ngModel)]="filterLevel" (ionChange)="onFilterChange()" placeholder="Level Filter">
+              <ion-select-option value="all">All Levels</ion-select-option>
+              <ion-select-option value="info">Info</ion-select-option>
+              <ion-select-option value="warn">Warning</ion-select-option>
+              <ion-select-option value="error">Error</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-button fill="clear" size="small" (click)="clearFilters()">
+        <ion-icon name="trash" slot="start"></ion-icon>
+        Clear Filters
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner></ion-spinner>
+    <p>Loading logs...</p>
+  </div>
+
+  <!-- Logs List -->
+  <div *ngIf="!isLoading">
+    <ion-card class="logs-info">
+      <ion-card-content>
+        <p><strong>{{activeTab === 'website' ? 'Website' : 'Job'}} Logs</strong></p>
+        <p>{{filteredLogs.length}} of {{logs.length}} entries</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-list *ngIf="filteredLogs.length > 0">
+      <ion-item 
+        *ngFor="let log of filteredLogs; trackBy: trackByIndex"
+        [class]="getLogClass(log.level)"
+        (click)="openLogModal(log)">
+        
+        <ion-label>
+          <div class="log-header">
+            <span class="log-time">{{formatTime(log.timestamp)}}</span>
+            <ion-chip [color]="getLevelColor(log.level)" size="small">
+              {{log.level?.toUpperCase() || 'INFO'}}
+            </ion-chip>
+          </div>
+          <p class="log-message">{{log.message}}</p>
+          <p class="log-preview" *ngIf="hasDetails(log)">
+            <small>Tap to view details...</small>
+          </p>
+        </ion-label>
+        
+        <ion-icon name="chevron-forward" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredLogs.length === 0">
+      <ion-icon name="document-text-outline" size="large"></ion-icon>
+      <h3>No logs found</h3>
+      <p *ngIf="logs.length > 0">Try adjusting your filters</p>
+      <p *ngIf="logs.length === 0">{{activeTab === 'website' ? 'Website' : 'Job'}} logs will appear here</p>
+    </div>
+  </div>
+</ion-content>

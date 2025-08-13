@@ -36,6 +36,10 @@ const routes: Routes = [
   {
     path: 'payment-history',
     loadChildren: () => import('./pages/payment-history/payment-history.module').then(m => m.PaymentHistoryPageModule)
+  },
+  {
+    path: 'system-logs',
+    loadChildren: () => import('./pages/system-logs/system-logs.module').then(m => m.SystemLogsPageModule)
   }
 ];
 
