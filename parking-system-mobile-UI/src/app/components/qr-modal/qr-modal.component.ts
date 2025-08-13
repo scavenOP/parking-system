@@ -28,7 +28,6 @@ import * as QRCode from 'qrcode';
           }
         </div>
         <div class="ticket-info">
-          <p><strong>Ticket ID:</strong> {{booking._id}}</p>
           <p><strong>Valid Until:</strong> {{formatTime(booking.endTime)}}</p>
           <p class="instruction">Show this QR code at the entrance</p>
           <div class="manual-code">
@@ -42,10 +41,6 @@ import * as QRCode from 'qrcode';
   styles: [`
     .qr-container {
       text-align: center;
-    }
-    .qr-container h3 {
-      color: #1a1a1a !important;
-      font-weight: 600;
     }
     .qr-code-wrapper {
       margin: 20px 0;
@@ -61,14 +56,6 @@ import * as QRCode from 'qrcode';
       padding: 15px;
       border-radius: 8px;
       margin-top: 20px;
-      color: #1a1a1a !important;
-    }
-    .ticket-info p {
-      color: #1a1a1a !important;
-      margin: 8px 0;
-    }
-    .ticket-info strong {
-      color: #1a1a1a !important;
     }
     .instruction {
       color: #666;
@@ -83,7 +70,7 @@ import * as QRCode from 'qrcode';
       border-left: 4px solid #2196f3;
     }
     .manual-text {
-      color: #666 !important;
+      color: #666;
       font-size: 12px;
       margin: 0 0 5px 0;
     }
