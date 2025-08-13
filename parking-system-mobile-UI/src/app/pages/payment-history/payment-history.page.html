@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Payment History</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="filter-section">
+    <ion-segment [(ngModel)]="selectedPeriod" (ionChange)="onPeriodChange()">
+      <ion-segment-button value="7">
+        <ion-label>7 Days</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="30">
+        <ion-label>30 Days</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="90">
+        <ion-label>90 Days</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="all">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <div class="payments-list" *ngIf="!isLoading">
+    <ion-card *ngFor="let payment of payments" class="payment-card">
+      <ion-card-content>
+        <div class="payment-header">
+          <div class="amount">₹{{payment.amount}}</div>
+          <ion-badge [color]="getStatusColor(payment.status)">
+            {{payment.status | titlecase}}
+          </ion-badge>
+        </div>
+        
+        <div class="payment-details">
+          <p><strong>Payment ID:</strong> {{payment.razorpayPaymentId || 'N/A'}}</p>
+          <p><strong>Date:</strong> {{formatDate(payment.createdAt)}}</p>
+          <p *ngIf="payment.space"><strong>Space:</strong> {{payment.space}}</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoading && payments.length === 0">
+    <ion-icon name="card-outline" size="large"></ion-icon>
+    <h3>No Payment History</h3>
+    <p>You haven't made any payments yet.</p>
+  </div>
+</ion-content>

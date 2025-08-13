@@ -45,6 +45,10 @@ JobScheduler.startScheduledJobs();
 import AdminRouter from './Routes/Admin-route.js';
 app.use("/api/admin", AdminRouter);
 
+// Import and use statistics routes
+import StatisticsRouter from './Routes/Statistics-route.js';
+app.use("/api/statistics", StatisticsRouter);
+
 // Serve static files from the Angular app
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, 'public', 'browser'), {

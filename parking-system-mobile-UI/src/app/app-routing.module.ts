@@ -32,6 +32,10 @@ const routes: Routes = [
   {
     path: 'qr-scanner',
     loadChildren: () => import('./pages/qr-scanner/qr-scanner.module').then(m => m.QrScannerPageModule)
+  },
+  {
+    path: 'payment-history',
+    loadChildren: () => import('./pages/payment-history/payment-history.module').then(m => m.PaymentHistoryPageModule)
   }
 ];
 

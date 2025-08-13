@@ -4,6 +4,7 @@ import { ToastController, AlertController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { TicketService, QRValidationResult } from '../../services/ticket.service';
 import { AuthService } from '../../services/auth.service';
+import { LoadingService } from '../../services/loading.service';
 import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 
 @Component({
@@ -30,7 +31,8 @@ export class QrScannerPage implements OnInit, OnDestroy {
     private ticketService: TicketService,
     private toastController: ToastController,
     private alertController: AlertController,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingService: LoadingService
   ) {
     this.codeReader = new BrowserMultiFormatReader();
   }
@@ -161,6 +163,8 @@ export class QrScannerPage implements OnInit, OnDestroy {
     
     console.log('QR Code detected:', qrData);
     
+    await this.loadingService.show('Validating ticket...');
+    
     try {
       // Use the same validation method as web
       const result = await this.ticketService.validateQRCode(qrData).toPromise();
@@ -174,6 +178,8 @@ export class QrScannerPage implements OnInit, OnDestroy {
         valid: false,
         message: 'Validation failed: ' + (error as any).message
       };
+    } finally {
+      await this.loadingService.hide();
     }
   }
 

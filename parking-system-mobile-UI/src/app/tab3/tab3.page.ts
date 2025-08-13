@@ -4,6 +4,7 @@ import { ToastController, AlertController, ModalController } from '@ionic/angula
 import { ParkingService } from '../services/parking.service';
 import { AuthService } from '../services/auth.service';
 import { TicketService } from '../services/ticket.service';
+import { LoadingService } from '../services/loading.service';
 
 interface Booking {
   _id: string;
@@ -42,7 +43,8 @@ export class Tab3Page implements OnInit {
     private alertController: AlertController,
     private modalController: ModalController,
     private authService: AuthService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -276,20 +278,26 @@ export class Tab3Page implements OnInit {
   }
 
   async showQRCode(booking: Booking) {
-    // Load ticket data first
-    await this.loadTicket(booking._id);
+    await this.loadingService.show('Generating QR code...');
     
-    const { QrModalComponent } = await import('../components/qr-modal/qr-modal.component');
-    
-    const modal = await this.modalController.create({
-      component: QrModalComponent,
-      componentProps: {
-        booking: booking,
-        qrCodeData: this.ticketQRs[booking._id]
-      }
-    });
-    
-    await modal.present();
+    try {
+      // Load ticket data first
+      await this.loadTicket(booking._id);
+      
+      const { QrModalComponent } = await import('../components/qr-modal/qr-modal.component');
+      
+      const modal = await this.modalController.create({
+        component: QrModalComponent,
+        componentProps: {
+          booking: booking,
+          qrCodeData: this.ticketQRs[booking._id]
+        }
+      });
+      
+      await modal.present();
+    } finally {
+      await this.loadingService.hide();
+    }
   }
 
   async cancelBooking(booking: Booking) {

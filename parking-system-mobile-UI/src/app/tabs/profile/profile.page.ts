@@ -4,6 +4,8 @@ import { IonicModule, ToastController, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService, UserViewModel } from '../../services/auth.service';
+import { StatisticsService } from '../../services/statistics.service';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-profile',
@@ -34,7 +36,9 @@ export class ProfilePage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private statisticsService: StatisticsService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -77,14 +81,31 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  loadUserStats() {
-    // Mock stats for demo
-    this.stats = {
-      totalBookings: 24,
-      totalSpent: 1250,
-      totalHours: 48,
-      favoriteSpot: 'Floor 2 - A15'
-    };
+  async loadUserStats() {
+    try {
+      await this.loadingService.show('Loading statistics...');
+      const response = await this.statisticsService.getUserStats().toPromise();
+      
+      if (response && response.success) {
+        this.stats = {
+          totalBookings: response.data.totalBookings || 0,
+          totalSpent: response.data.totalSpent || 0,
+          totalHours: response.data.totalHours || 0,
+          favoriteSpot: 'N/A' // Can be enhanced later
+        };
+      }
+    } catch (error) {
+      console.error('Error loading stats:', error);
+      // Keep mock data as fallback
+      this.stats = {
+        totalBookings: 0,
+        totalSpent: 0,
+        totalHours: 0,
+        favoriteSpot: 'N/A'
+      };
+    } finally {
+      await this.loadingService.hide();
+    }
   }
 
   toggleEdit() {

@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { ParkingService } from '../services/parking.service';
 import { PaymentService } from '../services/payment.service';
 import { TicketService } from '../services/ticket.service';
+import { LoadingService } from '../services/loading.service';
+import { LoadingComponent } from '../components/loading/loading.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var Razorpay: any;
@@ -30,7 +32,7 @@ interface BookingWithDetails {
 
 @Component({
   selector: 'app-reservations',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LoadingComponent],
   templateUrl: './reservations.html',
   styleUrl: './reservations.scss',
   animations: [
@@ -54,7 +56,8 @@ export class ReservationsComponent implements OnInit {
   constructor(
     private parkingService: ParkingService,
     private paymentService: PaymentService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -219,6 +222,7 @@ export class ReservationsComponent implements OnInit {
   }
 
   async loadTicket(bookingId: string) {
+    this.loadingService.show();
     try {
       console.log('Loading ticket for booking:', bookingId);
       const response = await this.ticketService.getUserTickets().toPromise();
@@ -241,6 +245,8 @@ export class ReservationsComponent implements OnInit {
       console.error('Error loading ticket:', error);
       // Try to generate ticket if loading fails
       await this.generateTicket(bookingId);
+    } finally {
+      this.loadingService.hide();
     }
   }
 

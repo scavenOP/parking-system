@@ -2,12 +2,14 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TicketService } from '../services/ticket.service';
+import { LoadingService } from '../services/loading.service';
+import { LoadingComponent } from '../components/loading/loading.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import QrScanner from 'qr-scanner';
 
 @Component({
   selector: 'app-qr-scanner',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingComponent],
   templateUrl: './qr-scanner.html',
   styleUrl: './qr-scanner.scss',
   animations: [
@@ -30,7 +32,10 @@ export class QrScannerComponent implements OnInit, OnDestroy {
   qrScanner: any = null;
   manualInput = '';
 
-  constructor(private ticketService: TicketService) {}
+  constructor(
+    private ticketService: TicketService,
+    private loadingService: LoadingService
+  ) {}
 
   ngOnInit() {
     // Delay camera loading to ensure DOM is ready
@@ -122,17 +127,14 @@ export class QrScannerComponent implements OnInit, OnDestroy {
   }
 
   async validateTicket(qrToken: string) {
-    // Start loading
     this.isValidating = true;
+    this.loadingService.show();
     
     console.log('Validating QR token:', qrToken);
     
     try {
       const response = await this.ticketService.validateTicket(qrToken).toPromise();
       console.log('Validation response:', response);
-      
-      // Stop loading
-      this.isValidating = false;
       
       if (response && response.success) {
         if (response.valid) {
@@ -145,11 +147,10 @@ export class QrScannerComponent implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('Validation error:', error);
-      
-      // Stop loading
-      this.isValidating = false;
-      
       alert('❌ ERROR: Network error. Please try again.');
+    } finally {
+      this.isValidating = false;
+      this.loadingService.hide();
     }
   }
 

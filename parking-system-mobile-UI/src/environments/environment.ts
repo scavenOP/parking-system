@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://smart-parking.azurewebsites.net'
+  apiUrl: 'http://localhost:8000'
 };
 
 /*

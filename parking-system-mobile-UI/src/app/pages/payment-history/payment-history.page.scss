@@ -1,0 +1,40 @@
+.filter-section {
+  padding: 16px;
+}
+
+.payments-list {
+  padding: 0 16px;
+}
+
+.payment-card {
+  margin-bottom: 12px;
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.amount {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--ion-color-primary);
+}
+
+.payment-details p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ion-color-medium);
+}
+
+.empty-state ion-icon {
+  margin-bottom: 20px;
+}

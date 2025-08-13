@@ -48,7 +48,7 @@ export class PaymentService {
     });
   }
 
-  getPaymentHistory(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/history`);
+  getPaymentHistory(period: string = '30'): Observable<any> {
+    return this.http.get(`${this.apiUrl}/history?period=${period}`);
   }
 }

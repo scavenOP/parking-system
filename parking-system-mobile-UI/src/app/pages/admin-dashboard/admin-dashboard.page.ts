@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { StatisticsService } from '../../services/statistics.service';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -23,12 +25,44 @@ export class AdminDashboardPage implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private statisticsService: StatisticsService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
     if (!this.isAdmin()) {
       this.router.navigate(['/tabs/tab1']);
+      return;
+    }
+    this.loadStats();
+  }
+
+  async loadStats() {
+    await this.loadingService.show('Loading statistics...');
+    
+    try {
+      const response = await this.statisticsService.getAdminStats().toPromise();
+      
+      if (response && response.success) {
+        this.stats = {
+          totalBookings: response.data.totalBookings || 0,
+          activeSessions: response.data.activeBookings || 0,
+          totalUsers: response.data.totalUsers || 0,
+          revenueToday: response.data.totalRevenue || 0
+        };
+      }
+    } catch (error) {
+      console.error('Error loading admin stats:', error);
+      // Keep default values as fallback
+      this.stats = {
+        totalBookings: 0,
+        activeSessions: 0,
+        totalUsers: 0,
+        revenueToday: 0
+      };
+    } finally {
+      await this.loadingService.hide();
     }
   }
 

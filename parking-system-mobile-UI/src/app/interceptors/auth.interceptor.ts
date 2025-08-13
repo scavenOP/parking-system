@@ -16,22 +16,21 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     return next.handle(req).pipe(
-      catchError(async (error: HttpErrorResponse) => {
+      catchError((error: HttpErrorResponse) => {
         if (error.status === 403 && error.error?.message === 'Invalid or expired token') {
           // Show toast notification
-          const toast = await this.toastController.create({
+          this.toastController.create({
             message: 'Session expired. Please login again.',
             duration: 3000,
             color: 'warning',
             position: 'top'
-          });
-          await toast.present();
+          }).then(toast => toast.present());
           
           // Token expired - logout and redirect to login
           this.authService.logout();
           this.router.navigate(['/login']);
         }
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
