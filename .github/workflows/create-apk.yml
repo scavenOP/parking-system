@@ -36,7 +36,7 @@ jobs:
         run: npx ionic cordova build android --prod -- --buildConfig=build.json --output ./APK/app-debug.apk
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: debug-apk
           path: Mobile/APK/app-debug.apk 
