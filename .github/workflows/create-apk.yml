@@ -32,6 +32,15 @@ jobs:
         run: npm run build # You might have a specific build script in your package.json
         working-directory: parking-system-mobile-UI
 
+      - name: Check if Android platform exists and remove if present
+        id: check_android_platform
+        run: |
+          if [ -d "parking-system-mobile-UI/android" ]; then
+            echo "Android platform already exists, removing..."
+            rm -rf parking-system-mobile-UI/android
+          fi
+        # No working-directory needed here as we're explicitly checking "Mobile/android"
+
       - name: Add Android platform
         run: npx cap add android
         working-directory: parking-system-mobile-UI
