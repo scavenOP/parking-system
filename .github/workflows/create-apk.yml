@@ -55,9 +55,13 @@ jobs:
         run: npx cap sync
         working-directory: parking-system-mobile-UI
 
-      - name: Build Android debug APK
-        run: cd android & chmod +x gradlew & ./gradlew assembleDebug
-        working-directory: parking-system-mobile-UI
+      - name: Go to gradlew dir
+        run: chmod +x gradlew & ./gradlew assembleDebug
+        working-directory: parking-system-mobile-UI/android
+
+      - name: Run assembleDebug
+        run: ./gradlew assembleDebug
+        working-directory: parking-system-mobile-UI/android
 
       - name: Create APK directory in root
         run: mkdir -p APK
