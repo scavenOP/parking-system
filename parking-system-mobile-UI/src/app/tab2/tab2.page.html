@@ -1,5 +1,8 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="transparent">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
     <ion-title class="page-title">Find Parking</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="showFilters = !showFilters">
@@ -46,6 +49,21 @@
     </div>
   </div>
 
+  <!-- Vehicle Selection -->
+  <div class="vehicle-section">
+    <h3>Select Your Vehicle</h3>
+    <ion-item>
+      <ion-select 
+        [(ngModel)]="searchCriteria.selectedCar" 
+        placeholder="Choose your vehicle"
+        (ionChange)="calculateAmountFromServer()">
+        <ion-select-option *ngFor="let car of availableCars" [value]="car._id">
+          {{car.make}} {{car.model}} - {{car.licensePlate}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </div>
+
   <!-- Date Time Selection -->
   <div class="datetime-section">
     <h3>When do you need parking?</h3>
@@ -72,6 +90,14 @@
           <ion-icon name="chevron-forward-outline"></ion-icon>
         </div>
       </div>
+    </div>
+    
+    <!-- Validation Errors -->
+    <div class="validation-errors" *ngIf="validationErrors.length > 0">
+      <ion-chip color="danger" *ngFor="let error of validationErrors">
+        <ion-icon name="warning-outline"></ion-icon>
+        <ion-label>{{error}}</ion-label>
+      </ion-chip>
     </div>
   </div>
 
@@ -122,7 +148,7 @@
           </div>
           
           <div class="space-price">
-            <span class="price">₹{{calculatePrice(space)}}</span>
+            <span class="price">₹{{space.pricePerHour || 50}}</span>
             <span class="duration">/hour</span>
           </div>
         </div>
@@ -164,9 +190,11 @@
       <div class="summary-details">
         <h4>Space {{selectedSpace.spaceNumber}}</h4>
         <p>Floor {{selectedSpace.floor}} • {{getDuration()}} hours</p>
+        <p *ngIf="getSelectedCarDetails()">{{getSelectedCarDetails()}}</p>
       </div>
       <div class="summary-price">
-        <span class="total-price">₹{{getTotalPrice()}}</span>
+        <span class="total-price" *ngIf="!isCalculatingAmount">₹{{calculatedAmount}}</span>
+        <span class="total-price" *ngIf="isCalculatingAmount">Calculating...</span>
       </div>
     </div>
     
@@ -174,9 +202,9 @@
       expand="block" 
       (click)="proceedToBooking()"
       class="book-button"
-      [disabled]="isBooking">
+      [disabled]="isBooking || validationErrors.length > 0">
       <ion-spinner *ngIf="isBooking" name="crescent"></ion-spinner>
-      <span *ngIf="!isBooking">Book Now</span>
+      <span *ngIf="!isBooking">Book Now - Pay ₹{{calculatedAmount}}</span>
     </ion-button>
   </div>
 </ion-content>

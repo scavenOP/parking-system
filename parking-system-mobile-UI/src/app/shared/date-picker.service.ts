@@ -14,32 +14,36 @@ export class DatePickerService {
     min?: string;
     max?: string;
   }): Promise<string | null> {
-    const alert = await this.alertController.create({
-      header: options.header,
-      inputs: [
-        {
-          name: 'date',
-          type: 'date',
-          value: options.value,
-          min: options.min,
-          max: options.max
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Select',
-          handler: (data) => data.date
-        }
-      ]
+    return new Promise(async (resolve) => {
+      const alert = await this.alertController.create({
+        header: options.header,
+        cssClass: 'date-picker-alert',
+        inputs: [
+          {
+            name: 'date',
+            type: 'date',
+            value: options.value,
+            min: options.min,
+            max: options.max
+          }
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            handler: () => resolve(null)
+          },
+          {
+            text: 'Select',
+            handler: (data) => {
+              resolve(data.date || null);
+            }
+          }
+        ]
+      });
+      
+      await alert.present();
     });
-    
-    await alert.present();
-    const result = await alert.onDidDismiss();
-    return result.data?.values?.date || null;
   }
 
   async openDateTimePicker(options: {
@@ -48,31 +52,35 @@ export class DatePickerService {
     min?: string;
     max?: string;
   }): Promise<string | null> {
-    const alert = await this.alertController.create({
-      header: options.header,
-      inputs: [
-        {
-          name: 'datetime',
-          type: 'datetime-local',
-          value: options.value,
-          min: options.min,
-          max: options.max
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Select',
-          handler: (data) => data.datetime
-        }
-      ]
+    return new Promise(async (resolve) => {
+      const alert = await this.alertController.create({
+        header: options.header,
+        cssClass: 'datetime-picker-alert',
+        inputs: [
+          {
+            name: 'datetime',
+            type: 'datetime-local',
+            value: options.value,
+            min: options.min,
+            max: options.max
+          }
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            handler: () => resolve(null)
+          },
+          {
+            text: 'Select',
+            handler: (data) => {
+              resolve(data.datetime || null);
+            }
+          }
+        ]
+      });
+      
+      await alert.present();
     });
-    
-    await alert.present();
-    const result = await alert.onDidDismiss();
-    return result.data?.values?.datetime || null;
   }
 }

@@ -35,3 +35,103 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Global Text Color Fix */
+* {
+  color: inherit;
+}
+
+ion-title {
+  color: #1a1a1a !important;
+}
+
+ion-label {
+  color: #1a1a1a !important;
+}
+
+ion-item {
+  --color: #1a1a1a !important;
+}
+
+ion-select {
+  --color: #1a1a1a !important;
+  --placeholder-color: #666666 !important;
+}
+
+/* Custom Alert Styles */
+.date-picker-alert,
+.datetime-picker-alert {
+  .alert-wrapper {
+    --background: white !important;
+    --color: #1a1a1a !important;
+    background: white !important;
+    color: #1a1a1a !important;
+  }
+  
+  .alert-head {
+    color: #1a1a1a !important;
+    font-weight: 600 !important;
+  }
+  
+  .alert-title {
+    color: #1a1a1a !important;
+    font-weight: 600 !important;
+  }
+  
+  .alert-input {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    color: #1a1a1a !important;
+    font-size: 16px !important;
+  }
+  
+  .alert-button {
+    color: #3880ff !important;
+    font-weight: 600 !important;
+  }
+  
+  .alert-button.alert-button-role-cancel {
+    color: #666666 !important;
+  }
+}
+
+/* QR Code Alert Styles */
+.qr-code-alert {
+  .qr-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .qr-placeholder {
+    width: 200px;
+    height: 200px;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    margin: 0 auto 15px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .qr-placeholder ion-icon {
+    font-size: 80px;
+    color: #64748b;
+  }
+  
+  .ticket-info {
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 15px;
+    text-align: left;
+  }
+  
+  .ticket-info p {
+    margin: 5px 0;
+    color: #334155;
+    font-size: 14px;
+  }
+}

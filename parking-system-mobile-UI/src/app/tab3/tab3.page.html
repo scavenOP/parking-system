@@ -1,5 +1,8 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="transparent">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
     <ion-title class="page-title">My Bookings</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="refreshBookings()">

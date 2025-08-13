@@ -7,7 +7,7 @@
 .page-title {
   font-weight: 700;
   font-size: 1.3rem;
-  color: var(--ion-color-dark);
+  color: #1a1a1a !important;
 }
 
 /* Stats Header */
@@ -63,13 +63,13 @@
 .stat-number {
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--ion-color-dark);
+  color: #1a1a1a !important;
   line-height: 1;
 }
 
 .stat-label {
   font-size: 0.8rem;
-  color: var(--ion-color-medium);
+  color: #666666 !important;
   margin-top: 0.2rem;
 }
 
@@ -190,7 +190,7 @@
   gap: 0.5rem;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--ion-color-dark);
+  color: #1a1a1a !important;
   margin-bottom: 0.3rem;
 }
 
@@ -200,7 +200,7 @@
 
 .space-details {
   font-size: 0.9rem;
-  color: var(--ion-color-medium);
+  color: #666666 !important;
 }
 
 .booking-amount {
@@ -230,7 +230,8 @@
 }
 
 .booking-actions ion-button {
-  --color: var(--ion-color-medium);
+  --color: #666666 !important;
+  color: #666666 !important;
   font-size: 0.8rem;
   height: 32px;
 }
@@ -287,11 +288,11 @@
   font-size: 1.2rem;
   font-weight: 600;
   margin: 0 0 0.5rem 0;
-  color: var(--ion-color-dark);
+  color: #1a1a1a !important;
 }
 
 .empty-state p {
-  color: var(--ion-color-medium);
+  color: #666666 !important;
   margin: 0 0 2rem 0;
   line-height: 1.5;
 }

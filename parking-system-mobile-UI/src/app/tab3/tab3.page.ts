@@ -265,21 +265,16 @@ export class Tab3Page implements OnInit {
   }
 
   async showQRCode(booking: Booking) {
-    const alert = await this.alertController.create({
-      header: 'QR Ticket',
-      subHeader: `Space ${booking.spaceNumber}`,
-      message: `
-        <div style="text-align: center; padding: 20px;">
-          <div style="width: 200px; height: 200px; background: #f0f0f0; margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-            <ion-icon name="qr-code" style="font-size: 100px; color: #666;"></ion-icon>
-          </div>
-          <p style="margin-top: 15px; color: #666;">Show this QR code at the entrance</p>
-        </div>
-      `,
-      buttons: ['Close']
+    const { QrModalComponent } = await import('../components/qr-modal/qr-modal.component');
+    
+    const modal = await this.modalController.create({
+      component: QrModalComponent,
+      componentProps: {
+        booking: booking
+      }
     });
-
-    await alert.present();
+    
+    await modal.present();
   }
 
   async cancelBooking(booking: Booking) {
