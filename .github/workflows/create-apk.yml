@@ -76,5 +76,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update Smart-Parking.apk"
-          branch: main # Specify the branch where the file should be committed
-          add_options: '-f' # Force add to overwrite if it exists
+          branch: main
+          file_pattern: 'APK/Smart-Parking.apk'
+          add_options: '-f'
