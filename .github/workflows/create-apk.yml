@@ -5,6 +5,9 @@ on:
     branches:
       - main  # Trigger on push to the main branch
 
+permissions:
+  contents: write
+
 jobs:
   build-apk:
     runs-on: ubuntu-latest
@@ -79,3 +82,5 @@ jobs:
           branch: main
           file_pattern: 'APK/Smart-Parking.apk'
           add_options: '-f'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
