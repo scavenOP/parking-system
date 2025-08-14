@@ -18,11 +18,11 @@ jobs:
         with:
           node-version: '20' # Adjust Node.js version as needed
 
-      - name: Setup Java 17
+      - name: Setup Java 21
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Install Ionic CLI and Capacitor
         run: npm install -g @ionic/cli @capacitor/core @capacitor/cli @capacitor/android
@@ -55,12 +55,8 @@ jobs:
         run: npx cap sync
         working-directory: parking-system-mobile-UI
 
-      - name: Go to gradlew dir
-        run: chmod +x gradlew & ./gradlew assembleDebug
-        working-directory: parking-system-mobile-UI/android
-
-      - name: Run assembleDebug
-        run: ./gradlew assembleDebug
+      - name: Make gradlew executable and build APK
+        run: chmod +x gradlew && ./gradlew assembleDebug
         working-directory: parking-system-mobile-UI/android
 
       - name: Create APK directory in root
