@@ -64,17 +64,17 @@ jobs:
         # No working-directory here, so it runs at the repo root
 
       - name: Copy and rename APK
-        run: cp parking-system-mobile-UI/android/app/build/outputs/apk/debug/app-debug.apk APK/Smart Parking.apk
+        run: cp "parking-system-mobile-UI/android/app/build/outputs/apk/debug/app-debug.apk" "APK/Smart-Parking.apk"
 
       - name: Upload artifact (optional, for debugging/downloading from workflow run)
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk
-          path: APK/Smart Parking.apk
+          path: APK/Smart-Parking.apk
 
       - name: Commit and push APK to repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update Smart Parking.apk"
+          commit_message: "Update Smart-Parking.apk"
           branch: main # Specify the branch where the file should be committed
           add_options: '-f' # Force add to overwrite if it exists
